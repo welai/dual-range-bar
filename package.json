@@ -1,0 +1,14 @@
+{
+  "name": "dual-range-bar",
+  "version": "1.0.0",
+  "description": "A dual range bar for slider or scrolling without dependency",
+  "main": "dist/dual-range-bar.js",
+  "keywords": ["scroll", "scrollbar"],
+  "scripts": {},
+  "author": "Celestial Phineas",
+  "license": "MIT",
+  "devDependencies": {
+    "webpack": "^4.17.1",
+    "webpack-cli": "^3.1.0"
+  }
+}
