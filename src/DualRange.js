@@ -50,6 +50,10 @@ class DualRange {
         // Function type: (newValue: number) => void
         this._setLowerRangeCallbacks = [];
         this._setUpperRangeCallbacks = [];
+
+        // Add callbacks for re-positioning
+        window.addEventListener('resize', () => { this.initPositions.call(this) });
+        dualRangeElement.addEventListener('change', () => { this.initPositions.call(this) });
     }
     // Value members
     get lowerBound() { return this._lowerBound; }
