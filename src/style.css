@@ -1,19 +1,55 @@
 .dual-background {
-    background-color: #cccccc;
+    background-color: #ff331133;
     width: 100%;
     height: 100%;
     border-radius: 8px;
+    z-index: 1;
 }
 
-.dual-container {
+.dual-container, .dual-range {
     display: inline-block;
+    position: fixed;
 }
 
-.dual-slider.dual-first,
-.dual-slider.dual-last {
+.dual-range.dual-container {
+    z-index: 2;
+}
+.dual-first.dual-container,
+.dual-last.dual-container {
+    z-index: 3;
+}
+
+.dual-slider {
+    position: relative;
+    top: 50%;
     background-color: black;
     width: 16px;
     height: 16px;
-    margin-top: -8px;
+    margin: auto;
     border-radius: 8px;
+}
+.dual-horizontal.dual-slider {
+    transform: translateY(-50%);
+}
+
+.dual-horizontal.dual-range.dual-slider {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 100%;
+    height: 10px;
+    background-color: #ccccccdd;
+}
+
+
+.dual-vertical.dual-container {
+    text-align: center;
+}
+.dual-vertical.dual-range.dual-slider {
+    position: absolute;
+    top: 0%;
+    transform: translateX(-50%);
+    width: 10px;
+    height: 100%;
+    background-color: #ccccccdd;
 }
