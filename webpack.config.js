@@ -4,7 +4,7 @@ module.exports = {
   mode: 'production',
   entry: './src/index.js',
   output: {
-    filename: 'dual-range-bar.js',
+    filename: 'dual-range-bar.min.js',
     path: path.resolve(__dirname, 'dist')
   },
   module: {

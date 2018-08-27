@@ -1,0 +1,19 @@
+.dual-background {
+    background-color: #cccccc;
+    width: 100%;
+    height: 100%;
+    border-radius: 8px;
+}
+
+.dual-container {
+    display: inline-block;
+}
+
+.dual-slider.dual-first,
+.dual-slider.dual-last {
+    background-color: black;
+    width: 16px;
+    height: 16px;
+    margin-top: -8px;
+    border-radius: 8px;
+}
