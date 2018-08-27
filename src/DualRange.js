@@ -52,8 +52,8 @@ class DualRange {
         this._setUpperRangeCallbacks = [];
 
         // Add callbacks for re-positioning
-        window.addEventListener('resize', () => { this.initPositions.call(this) });
-        dualRangeElement.addEventListener('change', () => { this.initPositions.call(this) });
+        window.addEventListener('resize', () => { this.updatePositions.call(this) });
+        dualRangeElement.addEventListener('change', () => { this.updatePositions.call(this) });
     }
     // Value members
     get lowerBound() { return this._lowerBound; }
@@ -91,7 +91,7 @@ class DualRange {
         this.dualRangeElement.appendChild(this.rangeSliderContainer);
         this.dualRangeElement.appendChild(this.lastSliderContainer);
     }
-    initPositions() {
+    updatePositions() {
         this.updateFirstPosition(this._lowerRange);
         this.updateRange(this._lowerRange, this._upperRange);
         this.updateLastPosition(this._upperRange);
@@ -121,7 +121,7 @@ export class DualHRange extends DualRange {
             this.lastSliderContainer, this.lastSlider
         ].forEach((div) => div.classList.add('dual-horizontal'));
         super.createInHrangeElements();
-        super.initPositions();
+        super.updatePositions();
     }
     _updateHorizontalPosition(val, container) {
         let offsetTop = this.dualRangeElement.offsetTop;
@@ -186,7 +186,7 @@ export class DualVRange extends DualRange {
             this.lastSliderContainer, this.lastSlider
         ].forEach((div) => div.classList.add('dual-vertical'));
         super.createInHrangeElements();
-        super.initPositions();
+        super.updatePositions();
     }
     _updateVerticalPosition(val, container) {
         let offsetTop = this.dualRangeElement.offsetTop;
