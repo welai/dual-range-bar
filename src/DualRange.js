@@ -54,6 +54,33 @@ class DualRange {
         // Add callbacks for re-positioning
         window.addEventListener('resize', () => { this.updatePositions.call(this) });
         dualRangeElement.addEventListener('change', () => { this.updatePositions.call(this) });
+
+        // Handle mouse events
+        // State parameters
+        this._firstMouseDown = false;
+        this._rangeMouseDown = false;
+        this._lastMouseDown = false;
+        this.firstSlider.onmousedown    = (event) => { this._firstMouseDown = true; }
+        this.rangeSlider.onmousedown    = (event) => { this._rangeMouseDown = true; }
+        this.lastSlider.onmousedown     = (event) => { this._lastMouseDown  = true; }
+        window.addEventListener('mouseup', (event) => {['_firstMouseDown', '_rangeMouseDown', '_lastMouseDown'].map((prop) => {this[prop] = false});})
+        window.addEventListener('mousemove', (event) => {
+            if(this._firstMouseDown) {
+                this.lowerRange = this.getMouseValue(event);
+            } else if(this._lastMouseDown) {
+                this.upperRange = this.getMouseValue(event);
+            }
+        });
+
+        // Call update positions when values updated
+        this.addLowerRangeChangeCallback((val) => {
+            this.updateFirstPosition(val);
+            this.updateRange(val, null);
+        });
+        this.addUpperRangeChangeCallback((val) => {
+            this.updateLastPosition(val);
+            this.updateRange(null, val);
+        });
     }
     // Value members
     get lowerBound() { return this._lowerBound; }
@@ -96,6 +123,20 @@ class DualRange {
         this.updateRange(this._lowerRange, this._upperRange);
         this.updateLastPosition(this._upperRange);
     }
+    // callback: (newValue: number) => void
+    addLowerRangeChangeCallback(callback) {
+        this._setLowerRangeCallbacks.push(callback);
+    }
+    addUpperRangeChangeCallback(callback) {
+        this._setUpperRangeCallbacks.push(callback);
+    }
+    addLowerBoundChangeCallback(callback) {
+        this._setLowerBoundCallbacks.push(callback);
+    }
+    addUpperBoundChangeCallback(callback) {
+        this._setUpperBoundCallbacks.push(callback);
+    }
+
     // This static function is used to get the DualRange object
     static getObject(id) {
         if(typeof DualRange.dict[id] !== 'undefined') {
@@ -167,6 +208,11 @@ export class DualHRange extends DualRange {
         this.rangeSliderContainer.style.top = `${this.dualRangeElement.offsetTop}px`;
         this.rangeSliderContainer.style.height = `${this.dualRangeElement.clientHeight}px`;
     }
+    getMouseValue(event) {
+        let relativeX = event.clientX - this.dualRangeElement.offsetLeft;
+        let percentage = relativeX / this.dualRangeElement.clientWidth;
+        return percentage * (this.upperBound - this.lowerBound) + this.lowerBound;
+    }
 
     // override
     static getObject(id) {
@@ -232,6 +278,12 @@ export class DualVRange extends DualRange {
         this.rangeSliderContainer.style.left = `${this.dualRangeElement.offsetLeft}px`;
         this.rangeSliderContainer.style.width = `${this.dualRangeElement.clientWidth}px`;
     }
+    getMouseValue(event) {
+        let relativeY = event.clientY - this.dualRangeElement.offsetTop;
+        let percentage = relativeY / this.dualRangeElement.clientHeight;
+        return percentage * (this.upperBound - this.lowerBound) + this.lowerBound;
+    }
+
     // override
     static getObject(id) {
         if(typeof DualRange.dict[id] !== 'undefined') {
