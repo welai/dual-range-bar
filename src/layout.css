@@ -1,16 +1,19 @@
 .dual-background {
-    background-color: #ff331133;
     width: 100%;
     height: 100%;
-    border-radius: 8px;
+    position: relative;
+    margin: auto;
     z-index: 1;
 }
+.dual-horizontal.dual-background {
+    top: 50%;
+    transform: translateY(-50%);
+}
 
-.dual-container, .dual-range {
+.dual-range, .dual-container {
     display: inline-block;
     position: fixed;
 }
-
 .dual-range.dual-container {
     z-index: 2;
 }
@@ -18,38 +21,33 @@
 .dual-last.dual-container {
     z-index: 3;
 }
+.dual-vertical.dual-container {
+    text-align: center;
+}
 
 .dual-slider {
     position: relative;
     top: 50%;
-    background-color: black;
-    width: 16px;
-    height: 16px;
     margin: auto;
-    border-radius: 8px;
 }
 .dual-horizontal.dual-slider {
     transform: translateY(-50%);
+    cursor: ew-resize;
 }
-
 .dual-horizontal.dual-range.dual-slider {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
     width: 100%;
-    height: 10px;
-    background-color: #ccccccdd;
+    cursor: move;
 }
-
-
-.dual-vertical.dual-container {
-    text-align: center;
+.dual-vertical.dual-slider {
+    cursor: ns-resize;
 }
 .dual-vertical.dual-range.dual-slider {
     position: absolute;
     top: 0%;
     transform: translateX(-50%);
-    width: 10px;
     height: 100%;
-    background-color: #ccccccdd;
+    cursor: move;
 }

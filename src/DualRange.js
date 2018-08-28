@@ -19,17 +19,17 @@ export default class DualRange {
 
         this.firstSliderContainer   = document.createElement('div');
         this.firstSliderContainer.classList.add(def.firstClass, def.containerClass);
-        this.firstSlider            = this.firstSliderContainer.appendChild(document.createElement('div'));
+        this.firstSlider            = this.firstSliderContainer.appendChild(document.createElement('button'));
         this.firstSlider.classList.add(def.firstClass, def.sliderClass);
 
         this.rangeSliderContainer   = document.createElement('div');
         this.rangeSliderContainer.classList.add(def.rangeClass, def.containerClass);
-        this.rangeSlider            = this.rangeSliderContainer.appendChild(document.createElement('div'));
+        this.rangeSlider            = this.rangeSliderContainer.appendChild(document.createElement('button'));
         this.rangeSlider.classList.add(def.rangeClass, def.sliderClass);
 
         this.lastSliderContainer    = document.createElement('div');
         this.lastSliderContainer.classList.add(def.lastClass, def.containerClass);
-        this.lastSlider             = this.lastSliderContainer.appendChild(document.createElement('div'));
+        this.lastSlider             = this.lastSliderContainer.appendChild(document.createElement('button'));
         this.lastSlider.classList.add(def.lastClass, def.sliderClass);
 
         function getEleAttVal(att, fallback) {

@@ -1,4 +1,5 @@
-import './style.css';
+import './layout.css';
+import './default-style.css';
 import def from './definitions';
 import DualHRange from './DualHRange';
 import DualVRange from './DualVRange';
