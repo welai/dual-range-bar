@@ -47,6 +47,7 @@ class DualRange {
 
         this._lowerRange = getEleAttVal('lower-range', 0);
         this._upperRange = getEleAttVal('upper-range', 1);
+        this._minDifference = getEleAttVal('min-difference', 0.1);
         // Function type: (newValue: number) => void
         this._setLowerRangeCallbacks = [];
         this._setUpperRangeCallbacks = [];
@@ -57,19 +58,103 @@ class DualRange {
 
         // Handle mouse events
         // State parameters
+        this._latestMouseActiveValue = null;
         this._firstMouseDown = false;
         this._rangeMouseDown = false;
         this._lastMouseDown = false;
-        this.firstSlider.onmousedown    = (event) => { this._firstMouseDown = true; }
-        this.rangeSlider.onmousedown    = (event) => { this._rangeMouseDown = true; }
-        this.lastSlider.onmousedown     = (event) => { this._lastMouseDown  = true; }
+        this._firstMouseOn = false;
+        this._rangeMouseOn = false;
+        this._lastMouseOn = false;
+        this.firstSlider.addEventListener('mouseenter', (event) => { this._firstMouseOn = true; });
+        this.rangeSlider.addEventListener('mouseenter', (event) => { this._rangeMouseOn = true; });
+        this.lastSlider.addEventListener('mouseenter', (event) => { this._lastMouseOn = true; });
+        this.firstSlider.addEventListener('mouseleave', (event) => { this._firstMouseOn = false; });
+        this.rangeSlider.addEventListener('mouseleave', (event) => { this._rangeMouseOn = false; });
+        this.lastSlider.addEventListener('mouseleave', (event) => { this._lastMouseOn = false; });
+        window.addEventListener('mousedown', (event) => {
+            this._latestMouseActiveValue = this.getMouseValue(event);
+            [this._firstMouseDown, this._rangeMouseDown, this._lastMouseDown]
+                = [this._firstMouseOn, this._rangeMouseOn, this._lastMouseOn];
+        })
         window.addEventListener('mouseup', (event) => {['_firstMouseDown', '_rangeMouseDown', '_lastMouseDown'].map((prop) => {this[prop] = false});})
         window.addEventListener('mousemove', (event) => {
             if(this._firstMouseDown) {
-                this.lowerRange = this.getMouseValue(event);
-            } else if(this._lastMouseDown) {
-                this.upperRange = this.getMouseValue(event);
+                var val = this.getMouseValue(event);
+                if(val < this._lowerBound) {
+                    this.lowerRange = this._lowerBound;
+                } else if(val >= this._lowerBound && val <= this._upperRange - this._minDifference) {
+                    this.lowerRange = val;
+                } else {
+                    if(val <= this._upperBound - this._minDifference) {
+                        this.lowerRange = val;
+                        this.upperRange = val + this._minDifference;
+                    } else {
+                        this.lowerRange = this._upperRange - this._minDifference;
+                    }
+                }
             }
+            if(this._rangeMouseDown) {
+                var val = this.getMouseValue(event);
+                var d = val - this._latestMouseActiveValue;
+                this._latestMouseActiveValue = val;
+                if(this._lowerRange + d < this._lowerBound) {
+                    this.upperRange = this._lowerBound + this._upperRange - this._lowerRange;
+                    this.lowerRange = this._lowerBound;
+                } else if(this._upperRange + d > this._upperBound) {
+                    this.lowerRange = this._upperBound - (this._upperRange - this._lowerRange);
+                    this.upperRange = this._upperBound;
+                } else {
+                    this.lowerRange = this._lowerRange + d;
+                    this.upperRange = this._upperRange + d;
+                }
+            }
+            if(this._lastMouseDown) {
+                var val = this.getMouseValue(event);
+                if(val < this._lowerRange + this._minDifference) {
+                    if(val >= this._lowerBound + this._minDifference) {
+                        this.upperRange = val;
+                        this.lowerRange = val - this._minDifference;
+                    } else {
+                        this.upperRange = this._lowerRange + this._minDifference;
+                    }
+                } else if(val >= this._lowerRange + this._minDifference && val <= this._upperBound) {
+                    this.upperRange = val;
+                } else {
+                    this.upperRange = this._upperBound;
+                }
+            }
+        });
+        this.rangeSlider.addEventListener('mousewheel', (event) => {
+            let val = this.getMouseValue(event);
+            let d = event.wheelDelta/1000;
+            let expectedLowerRange = this._lowerRange + (val - this._lowerRange) * d;
+            let expectedUpperRange = this._upperRange - (this._upperRange - val) * d;
+            if(expectedLowerRange < this._lowerBound) expectedLowerRange = this._lowerBound;
+            if(expectedUpperRange > this._upperBound) expectedUpperRange = this._upperBound;
+            if(expectedUpperRange - expectedLowerRange < this._minDifference) {
+                expectedLowerRange = expectedUpperRange - this._minDifference;
+                if(expectedLowerRange < this._lowerBound) {
+                    expectedLowerRange = this._lowerBound;
+                    expectedUpperRange = this._lowerBound + this._minDifference;
+                }
+            }
+            this.lowerRange = expectedLowerRange;
+            this.upperRange = expectedUpperRange;
+        });
+        this.backgroundDiv.addEventListener('mousewheel', (event) => {
+            let d = -event.wheelDelta/(this._upperRange - this._lowerRange)/1000;
+            let expectedLowerRange = this._lowerRange + d;
+            let expectedUpperRange = this._upperRange + d;
+            if(expectedLowerRange < this._lowerBound) {
+                expectedLowerRange = this._lowerBound;
+                expectedUpperRange = this._lowerBound + this._upperRange - this._lowerRange;
+            }
+            if(expectedUpperRange > this._upperBound) {
+                expectedUpperRange = this._upperBound;
+                expectedLowerRange = this._upperBound - (this._upperRange - this._lowerRange);
+            }
+            this.lowerRange = expectedLowerRange;
+            this.upperRange = expectedUpperRange;
         });
 
         // Call update positions when values updated
