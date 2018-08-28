@@ -142,7 +142,7 @@ class DualRange {
             this.upperRange = expectedUpperRange;
         });
         this.backgroundDiv.addEventListener('mousewheel', (event) => {
-            let d = -event.wheelDelta/(this._upperRange - this._lowerRange)/1000;
+            let d = -event.wheelDelta/(this._upperBound - this._lowerBound)/2500;
             let expectedLowerRange = this._lowerRange + d;
             let expectedUpperRange = this._upperRange + d;
             if(expectedLowerRange < this._lowerBound) {
