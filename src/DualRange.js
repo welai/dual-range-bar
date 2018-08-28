@@ -1,34 +1,36 @@
-import { dualHrangeClassName, dualVrangeClassName } from './definitions';
+import def from './definitions';
 
-class DualRange {
+export default class DualRange {
+    // This constructor should never be called directly
     constructor(htmlElement) {
+        // Handle parameters
         if(typeof htmlElement === 'string') {
             htmlElement = document.getElementById(htmlElement);
         }
 
-        // Store this in the static 
+        // Store this in a static variable
         if(!DualRange.dict) DualRange.dict = {};
         DualRange.dict[htmlElement.id] = this;
 
         var dualRangeElement = this.dualRangeElement = htmlElement;
 
         this.backgroundDiv          = document.createElement('div');
-        this.backgroundDiv.classList.add('dual-background');
+        this.backgroundDiv.classList.add(def.backgroundClass);
 
         this.firstSliderContainer   = document.createElement('div');
-        this.firstSliderContainer.classList.add('dual-first', 'dual-container');
+        this.firstSliderContainer.classList.add(def.firstClass, def.containerClass);
         this.firstSlider            = this.firstSliderContainer.appendChild(document.createElement('div'));
-        this.firstSlider.classList.add('dual-first', 'dual-slider');
+        this.firstSlider.classList.add(def.firstClass, def.sliderClass);
 
         this.rangeSliderContainer   = document.createElement('div');
-        this.rangeSliderContainer.classList.add('dual-range', 'dual-container');
+        this.rangeSliderContainer.classList.add(def.rangeClass, def.containerClass);
         this.rangeSlider            = this.rangeSliderContainer.appendChild(document.createElement('div'));
-        this.rangeSlider.classList.add('dual-range', 'dual-slider');
+        this.rangeSlider.classList.add(def.rangeClass, def.sliderClass);
 
         this.lastSliderContainer    = document.createElement('div');
-        this.lastSliderContainer.classList.add('dual-last', 'dual-container');
+        this.lastSliderContainer.classList.add(def.lastClass, def.containerClass);
         this.lastSlider             = this.lastSliderContainer.appendChild(document.createElement('div'));
-        this.lastSlider.classList.add('dual-last', 'dual-slider');
+        this.lastSlider.classList.add(def.lastClass, def.sliderClass);
 
         function getEleAttVal(att, fallback) {
             let attVal = dualRangeElement.getAttribute(att);
@@ -39,15 +41,15 @@ class DualRange {
             return fallback;
         }
         // Some members hided by naming
-        this._lowerBound = getEleAttVal('lower-bound', 0);
-        this._upperBound = getEleAttVal('upper-bound', 1);
+        this._lowerBound = getEleAttVal(def.lowerBoundAtt, 0);
+        this._upperBound = getEleAttVal(def.upperBoundAtt, 1);
         this._relativeLower = 0;
         this._relativeUpper = 1;
         // Function type: (newValue: number) => void
         this._setLowerBoundCallbacks = [];
         this._setUpperBoundCallbacks = [];
 
-        this._minDifference = getEleAttVal('min-difference', 0.1);
+        this._minDifference = getEleAttVal(def.minDiffAtt, 0.1);
         this._relativeDifference = Math.abs(this._minDifference/(this._upperBound - this._lowerBound));
         if(this._relativeDifference < 0.05 || this._relativeDifference > 1) {
             this._relativeDifference = 0.1;
@@ -112,7 +114,6 @@ class DualRange {
     }
     get relativeUpper() { return this._relativeUpper; }
     set relativeUpper(newVal) {
-        console.log(`in setter: ${newVal}`);
         this._relativeUpper = newVal;
         this._setUpperRangeCallbacks.forEach((fun) => {
             fun.apply(window, [newVal]);
@@ -221,6 +222,12 @@ class DualRange {
             this.relativeUpper = expectedUpperRange;
         });
     }
+    // callback: (newValue: number) => void
+    addLowerRangeChangeCallback(callback) { this._setLowerRangeCallbacks.push(callback); }
+    addUpperRangeChangeCallback(callback) { this._setUpperRangeCallbacks.push(callback); }
+    addLowerBoundChangeCallback(callback) { this._setLowerBoundCallbacks.push(callback); }
+    addUpperBoundChangeCallback(callback) { this._setUpperBoundCallbacks.push(callback); }
+
     createInHrangeElements() {
         this.dualRangeElement.appendChild(this.backgroundDiv);
         this.dualRangeElement.appendChild(this.firstSliderContainer);
@@ -232,19 +239,12 @@ class DualRange {
         this.updateRange(this._relativeLower, this._relativeUpper);
         this.updateLastPosition(this._relativeUpper);
     }
-    // callback: (newValue: number) => void
-    addLowerRangeChangeCallback(callback) {
-        this._setLowerRangeCallbacks.push(callback);
-    }
-    addUpperRangeChangeCallback(callback) {
-        this._setUpperRangeCallbacks.push(callback);
-    }
-    addLowerBoundChangeCallback(callback) {
-        this._setLowerBoundCallbacks.push(callback);
-    }
-    addUpperBoundChangeCallback(callback) {
-        this._setUpperBoundCallbacks.push(callback);
-    }
+    // updateFirstPosition(val: number) => void
+    updateFirstPosition(val) {}
+    // updateRange(val1: number, val2: number) => void
+    updateRange(val1, val2) {}
+    // updateLastPosition(val: number) => void
+    updateLastPosition(val) {}
 
     // This static function is used to get the DualRange object
     static getObject(id) {
@@ -258,145 +258,5 @@ class DualRange {
                 return DualVRange(id);
             } else return null;
         }
-    }
-}
-
-export class DualHRange extends DualRange {
-    constructor(htmlElement) {
-        super(htmlElement);
-        [
-            this.backgroundDiv,
-            this.firstSliderContainer, this.firstSlider,
-            this.rangeSliderContainer, this.rangeSlider,
-            this.lastSliderContainer, this.lastSlider
-        ].forEach((div) => div.classList.add('dual-horizontal'));
-        super.createInHrangeElements();
-        super.updatePositions();
-    }
-    _updateHorizontalPosition(val, container) {
-        let offsetTop = this.dualRangeElement.offsetTop;
-        let offsetLeft = this.dualRangeElement.offsetLeft;
-        let eleWidth = this.dualRangeElement.clientWidth;
-        let eleHeight = this.dualRangeElement.clientHeight;
-        let percentage = val;
-
-        let top = offsetTop;
-        let left = offsetLeft + percentage * eleWidth - this.firstSliderContainer.clientWidth/2;
-        container.style.top = `${top}px`;
-        container.style.left = `${left}px`;
-        container.style.height = `${eleHeight}px`;
-    }
-    updateFirstPosition(val) {
-        this._updateHorizontalPosition(val, this.firstSliderContainer);
-    }
-    updateLastPosition(val) {
-        this._updateHorizontalPosition(val, this.lastSliderContainer);
-    }
-    updateRange(val1, val2) {
-        if(typeof val1 === 'number' && !isNaN(val1)) {
-            let oldLeft = this.rangeSliderContainer.offsetLeft;
-            let oldWidth = this.rangeSliderContainer.clientWidth;
-            let oldRight = oldLeft + oldWidth;
-            let percentage = val1;
-            let newLeft = this.dualRangeElement.offsetLeft
-                + percentage * this.dualRangeElement.clientWidth;
-            let newWidth = oldRight - newLeft;
-            this.rangeSliderContainer.style.left = `${newLeft}px`;
-            this.rangeSliderContainer.style.width = `${newWidth}px`;
-        }
-
-        if(typeof val2 === 'number' && !isNaN(val2)) {
-            let oldLeft = this.rangeSliderContainer.offsetLeft;
-            let percentage = val2;
-            let newRight = this.dualRangeElement.offsetLeft
-                + percentage * this.dualRangeElement.clientWidth;
-            let newWidth = newRight - oldLeft;
-            this.rangeSliderContainer.style.width = `${newWidth}px`;
-        }
-
-        this.rangeSliderContainer.style.top = `${this.dualRangeElement.offsetTop}px`;
-        this.rangeSliderContainer.style.height = `${this.dualRangeElement.clientHeight}px`;
-    }
-    getMouseValue(event) {
-        let relativeX = event.clientX - this.dualRangeElement.offsetLeft;
-        let percentage = relativeX / this.dualRangeElement.clientWidth;
-        return percentage;
-    }
-
-    // override
-    static getObject(id) {
-        if(typeof DualRange.dict[id] !== 'undefined') {
-            return DualRange.dict[id];
-        } else return DualHRange(id);
-    }
-}
-
-export class DualVRange extends DualRange {
-    constructor(htmlElement) {
-        super(htmlElement);
-        [
-            this.backgroundDiv,
-            this.firstSliderContainer, this.firstSlider,
-            this.rangeSliderContainer, this.rangeSlider,
-            this.lastSliderContainer, this.lastSlider
-        ].forEach((div) => div.classList.add('dual-vertical'));
-        super.createInHrangeElements();
-        super.updatePositions();
-    }
-    _updateVerticalPosition(val, container) {
-        let offsetTop = this.dualRangeElement.offsetTop;
-        let offsetLeft = this.dualRangeElement.offsetLeft;
-        let eleWidth = this.dualRangeElement.clientWidth;
-        let eleHeight = this.dualRangeElement.clientHeight;
-        let percentage = val;
-
-        let top = offsetTop + percentage * eleHeight - this.firstSliderContainer.clientHeight/2;
-        let left = offsetLeft;
-        container.style.top = `${top}px`;
-        container.style.left = `${left}px`;
-        container.style.width = `${eleWidth}px`;
-    }
-    updateFirstPosition(val) {
-        this._updateVerticalPosition(val, this.firstSliderContainer);
-    }
-    updateLastPosition(val) {
-        this._updateVerticalPosition(val, this.lastSliderContainer);
-    }
-    updateRange(val1, val2) {
-        if(typeof val1 === 'number' && !isNaN(val1)) {
-            let oldTop = this.rangeSliderContainer.offsetTop;
-            let oldHeight = this.rangeSliderContainer.clientHeight;
-            let oldBottom = oldTop + oldHeight;
-            let percentage = val1;
-            let newTop = this.dualRangeElement.offsetTop
-                + percentage * this.dualRangeElement.clientHeight;
-            let newHeight = oldBottom - newTop;
-            this.rangeSliderContainer.style.top = `${newTop}px`;
-            this.rangeSliderContainer.style.height = `${newHeight}px`;
-        }
-
-        if(typeof val2 === 'number' && !isNaN(val2)) {
-            let oldTop = this.rangeSliderContainer.offsetTop;
-            let percentage = val2;
-            let newBottom = this.dualRangeElement.offsetTop
-                + percentage * this.dualRangeElement.clientHeight;
-            let newHeight = newBottom - oldTop;
-            this.rangeSliderContainer.style.height = `${newHeight}px`;
-        }
-
-        this.rangeSliderContainer.style.left = `${this.dualRangeElement.offsetLeft}px`;
-        this.rangeSliderContainer.style.width = `${this.dualRangeElement.clientWidth}px`;
-    }
-    getMouseValue(event) {
-        let relativeY = event.clientY - this.dualRangeElement.offsetTop;
-        let percentage = relativeY / this.dualRangeElement.clientHeight;
-        return percentage;
-    }
-
-    // override
-    static getObject(id) {
-        if(typeof DualRange.dict[id] !== 'undefined') {
-            return DualRange.dict[id];
-        } else return DualVRange(id);
     }
 }

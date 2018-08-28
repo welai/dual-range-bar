@@ -13,6 +13,9 @@
   "author": "Celestial Phineas",
   "license": "MIT",
   "devDependencies": {
+    "@babel/core": "^7.0.0",
+    "@babel/preset-env": "^7.0.0",
+    "babel-loader": "^8.0.0",
     "css-loader": "^1.0.0",
     "style-loader": "^0.22.1",
     "webpack": "^4.17.1",

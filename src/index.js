@@ -1,9 +1,10 @@
 import './style.css';
-import { dualHrangeClassName, dualVrangeClassName } from './definitions';
-import { DualHRange, DualVRange } from './DualRange'
+import def from './definitions';
+import DualHRange from './DualHRange';
+import DualVRange from './DualVRange';
 
-let dualHranges = document.getElementsByClassName(dualHrangeClassName);
-let dualVranges = document.getElementsByClassName(dualVrangeClassName);
+let dualHranges = document.getElementsByClassName(def.hrangeClassName);
+let dualVranges = document.getElementsByClassName(def.vrangeClassName);
 
 window.addEventListener('load', (event) => {
     for(let i = 0; i < dualHranges.length; i++) {
@@ -12,4 +13,9 @@ window.addEventListener('load', (event) => {
     for(let i = 0; i < dualVranges.length; i++) { new DualVRange(dualVranges[i]); }
 });
 
-export var a = 'a';
+var toExport = window.DualRangeBar = {
+    getHorizontal   : DualHRange.getObject,
+    getVertical     : DualVRange.getObject
+}
+
+export default toExport;
