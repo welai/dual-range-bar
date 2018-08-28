@@ -75,6 +75,12 @@ export default class DualRange {
             this.updateLastPosition(val);
             this.updateRange(null, val);
         });
+        this.addLowerBoundChangeCallback((val) => {
+            this.updatePositions();
+        })
+        this.addUpperBoundChangeCallback((val) => {
+            this.updatePositions();
+        })
     }
     // Value members
     get lowerBound() { return this._lowerBound; }
@@ -91,14 +97,14 @@ export default class DualRange {
             fun.apply(window, [newVal]);
         });
     }
-    get lowerRange() { return this._relativeLower * (this._upperBound - this._lowerBound) + this._relativeLower; }
+    get lowerRange() { return this._relativeLower * (this._upperBound - this._lowerBound) + this._lowerBound; }
     set lowerRange(newVal) {
         this._relativeLower = (newVal - this._lowerBound)/(this._upperBound - this._lowerBound);
         this._setLowerRangeCallbacks.forEach((fun) => {
             fun.apply(window, [newVal]);
         });
     }
-    get upperRange() { return this._relativeUpper * (this._upperBound - this._lowerBound) + this._relativeLower; }
+    get upperRange() { return this._relativeUpper * (this._upperBound - this._lowerBound) + this._lowerBound; }
     set upperRange(newVal) {
         this._relativeUpper = (newVal - this._lowerBound)/(this._upperBound - this._lowerBound);
         this._setUpperRangeCallbacks.forEach((fun) => {
