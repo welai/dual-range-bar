@@ -36,7 +36,7 @@
 }
 
 .dual-background {
-    background-color: #cccccccc;
+    background-color: rgba(200, 200, 200, 0.7);
     border-radius: 4px;
 }
 .dual-horizontal.dual-background {
