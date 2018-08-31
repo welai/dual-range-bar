@@ -137,18 +137,28 @@ export default class DualRange {
         this._rangeMouseOn = false;
         this._lastMouseOn = false;
         this.firstSlider.addEventListener('mouseenter', (event) => { this._firstMouseOn = true; });
+        this.firstSlider.addEventListener('touchstart', (event) => { this._firstMouseOn = true; });
         this.rangeSlider.addEventListener('mouseenter', (event) => { this._rangeMouseOn = true; });
+        this.rangeSlider.addEventListener('touchstart', (event) => { this._rangeMouseOn = true; });
         this.lastSlider.addEventListener('mouseenter', (event) => { this._lastMouseOn = true; });
+        this.lastSlider.addEventListener('touchstart', (event) => { this._lastMouseOn = true; });
         this.firstSlider.addEventListener('mouseleave', (event) => { this._firstMouseOn = false; });
+        this.firstSlider.addEventListener('touchend', (event) => { this._firstMouseOn = false; });
         this.rangeSlider.addEventListener('mouseleave', (event) => { this._rangeMouseOn = false; });
+        this.rangeSlider.addEventListener('touchend', (event) => { this._rangeMouseOn = false; });
         this.lastSlider.addEventListener('mouseleave', (event) => { this._lastMouseOn = false; });
-        window.addEventListener('mousedown', (event) => {
+        this.lastSlider.addEventListener('touchend', (event) => { this._lastMouseOn = false; });
+        var windowMouseDownCallback = (event) => {
             this._latestMouseActiveValue = this.getMouseValue(event);
             [this._firstMouseDown, this._rangeMouseDown, this._lastMouseDown]
                 = [this._firstMouseOn, this._rangeMouseOn, this._lastMouseOn];
-        })
-        window.addEventListener('mouseup', (event) => {['_firstMouseDown', '_rangeMouseDown', '_lastMouseDown'].map((prop) => {this[prop] = false});})
-        window.addEventListener('mousemove', (event) => {
+        };
+        window.addEventListener('mousedown', windowMouseDownCallback);
+        window.addEventListener('touchstart', windowMouseDownCallback);
+        var windowMouseUpCallback = (event) => {['_firstMouseDown', '_rangeMouseDown', '_lastMouseDown'].map((prop) => {this[prop] = false});}
+        window.addEventListener('mouseup', windowMouseUpCallback);
+        window.addEventListener('touchend', windowMouseUpCallback);
+        var windowMouseMoveCallback = (event) => {
             if(this._firstMouseDown) {
                 var val = this.getMouseValue(event);
                 if(val < 0) {
@@ -194,7 +204,9 @@ export default class DualRange {
                     this.relativeUpper = 1;
                 }
             }
-        });
+        };
+        window.addEventListener('mousemove', windowMouseMoveCallback);
+        window.addEventListener('touchmove', windowMouseMoveCallback);
         this.rangeSlider.addEventListener('mousewheel', (event) => {
             let val = this.getMouseValue(event);
             let d = event.wheelDelta/1000;
@@ -251,6 +263,8 @@ export default class DualRange {
     updateRange(val1, val2) {}
     // updateLastPosition(val: number) => void
     updateLastPosition(val) {}
+    // getMouseValue(event: Event) => number
+    getMouseValue(event) { return 0; }
 
     // This static function is used to get the DualRange object
     static getObject(id) {

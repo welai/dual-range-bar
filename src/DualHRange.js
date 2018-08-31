@@ -58,7 +58,8 @@ export default class DualHRange extends DualRange {
         this.rangeSliderContainer.style.height = `${this.dualRangeElement.clientHeight}px`;
     }
     getMouseValue(event) {
-        let relativeX = event.clientX - this.dualRangeElement.offsetLeft;
+        let clientX =  event.touches ? event.touches.item(0).clientX : event.clientX;
+        let relativeX = clientX - this.dualRangeElement.offsetLeft;
         let percentage = relativeX / this.dualRangeElement.clientWidth;
         return percentage;
     }
