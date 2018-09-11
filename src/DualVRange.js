@@ -37,10 +37,10 @@ export default class DualVRange extends DualRange {
             let oldHeight = this.rangeSliderContainer.clientHeight;
             let oldBottom = oldTop + oldHeight;
             let percentage = val1;
-            let newTop = this.dualRangeElement.offsetTop
+            let newTop = this.dualRangeElement.offsetTop - window.scrollY
                 + percentage * this.dualRangeElement.clientHeight;
             let newHeight = oldBottom - newTop;
-            this.rangeSliderContainer.style.top = `${newTop - window.scrollY}px`;
+            this.rangeSliderContainer.style.top = `${newTop}px`;
             this.rangeSliderContainer.style.height = `${newHeight}px`;
         }
 
@@ -50,7 +50,7 @@ export default class DualVRange extends DualRange {
             let newBottom = this.dualRangeElement.offsetTop
                 + percentage * this.dualRangeElement.clientHeight;
             let newHeight = newBottom - oldTop;
-            this.rangeSliderContainer.style.height = `${newHeight}px`;
+            this.rangeSliderContainer.style.height = `${newHeight - window.scrollY}px`;
         }
 
         this.rangeSliderContainer.style.left = `${this.dualRangeElement.offsetLeft - window.scrollX}px`;
@@ -58,7 +58,7 @@ export default class DualVRange extends DualRange {
     }
     getMouseValue(event) {
         let clientY = event.touches ? event.touches.item(0).clientY : event.clientY;
-        let relativeY = clientY - this.dualRangeElement.offsetTop;
+        let relativeY = clientY - this.dualRangeElement.offsetTop + window.scrollY;
         let percentage = relativeY / this.dualRangeElement.clientHeight;
         return percentage;
     }
