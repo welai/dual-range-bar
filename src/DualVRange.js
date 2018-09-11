@@ -22,8 +22,8 @@ export default class DualVRange extends DualRange {
 
         let top = offsetTop + percentage * eleHeight - this.firstSliderContainer.clientHeight/2;
         let left = offsetLeft;
-        container.style.top = `${top}px`;
-        container.style.left = `${left}px`;
+        container.style.top = `${top - window.scrollY}px`;
+        container.style.left = `${left - window.scrollX}px`;
         container.style.width = `${eleWidth}px`;
     }
     // override
@@ -40,7 +40,7 @@ export default class DualVRange extends DualRange {
             let newTop = this.dualRangeElement.offsetTop
                 + percentage * this.dualRangeElement.clientHeight;
             let newHeight = oldBottom - newTop;
-            this.rangeSliderContainer.style.top = `${newTop}px`;
+            this.rangeSliderContainer.style.top = `${newTop - window.scrollY}px`;
             this.rangeSliderContainer.style.height = `${newHeight}px`;
         }
 
@@ -53,7 +53,7 @@ export default class DualVRange extends DualRange {
             this.rangeSliderContainer.style.height = `${newHeight}px`;
         }
 
-        this.rangeSliderContainer.style.left = `${this.dualRangeElement.offsetLeft}px`;
+        this.rangeSliderContainer.style.left = `${this.dualRangeElement.offsetLeft - window.scrollX}px`;
         this.rangeSliderContainer.style.width = `${this.dualRangeElement.clientWidth}px`;
     }
     getMouseValue(event) {

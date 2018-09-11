@@ -12,7 +12,7 @@
 }
 .dual-first.dual-horizontal.dual-slider:active,
 .dual-last.dual-horizontal.dual-slider:active {
-    transform: scale(1.2,1.2) translateY(-40%);
+    transform: scale(1.2,1.2) translateX(-40%) translateY(-40%);
     transition: all 100ms;
 }
 .dual-first.dual-vertical.dual-slider:active,

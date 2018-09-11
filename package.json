@@ -3,12 +3,13 @@
   "version": "1.0.0",
   "description": "A dual range bar for slider or scrolling without dependency",
   "main": "dist/dual-range-bar.min.js",
+  "repository": "https://github.com/celestialphineas/dual-range-bar",
   "keywords": [
     "scroll",
     "scrollbar"
   ],
   "scripts": {
-    "build": "webpack"
+    "build": "node ./scripts/build.js"
   },
   "author": "Celestial Phineas",
   "license": "MIT",

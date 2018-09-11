@@ -61,6 +61,7 @@ export default class DualRange {
 
         // Add callbacks for re-positioning
         window.addEventListener('resize', () => { this.updatePositions.call(this) });
+        window.addEventListener('scroll', () => { this.updatePositions.call(this) });
         dualRangeElement.addEventListener('change', () => { this.updatePositions.call(this) });
 
         // Binding mouse events
