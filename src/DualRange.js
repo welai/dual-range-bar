@@ -52,6 +52,7 @@ export default class DualRange {
         this._minDifference = getEleAttVal(def.minDiffAtt, 0.1);
         this._relativeDifference = Math.abs(this._minDifference/(this._upperBound - this._lowerBound));
         if(this._relativeDifference < 0.05 || this._relativeDifference > 1) {
+            console.warn(`Invalid setting of ${def.minDiffAtt}, restored to default 0.1`);
             this._relativeDifference = 0.1;
             this._minDifference = _relativeDifference * (this._upperBound - this._lowerBound);
         }
