@@ -9,7 +9,7 @@
     "scrollbar"
   ],
   "scripts": {
-    "build": "node ./scripts/build.js"
+    "build": "webpack"
   },
   "author": "Celestial Phineas",
   "license": "MIT",
@@ -19,6 +19,8 @@
     "babel-loader": "^8.0.0",
     "css-loader": "^1.0.0",
     "style-loader": "^0.22.1",
+    "ts-loader": "^5.2.1",
+    "typescript": "^3.0.3",
     "webpack": "^4.17.1",
     "webpack-cli": "^3.1.0"
   }

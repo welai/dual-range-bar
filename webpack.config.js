@@ -3,12 +3,13 @@ const path = require('path');
 module.exports = {
   mode: 'production',
   entry: {
-    'dual-range-bar.min.js': './src/index.min.js',
-    'dual-range-bar.es.js': './src/index.es.js'
+    'dual-range-bar.min.js': './src/index.min.js'
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: '[name]'
+    filename: '[name]',
+    library: 'dual',
+    library: 'umd'
   },
   module: {
     rules: [
