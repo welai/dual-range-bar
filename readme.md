@@ -1,6 +1,6 @@
 # Dual range bar
 
-A minimum scrolling bar/slider with two sliders that can be used for range scrolling/selection.
+A minimal scrolling bar/slider with two sliders that can be used for range scrolling/selection.
 
 Demo: https://celestialphineas.github.io/dual-range-bar
 
