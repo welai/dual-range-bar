@@ -1,11 +1,13 @@
 {
   "name": "dual-range-bar",
-  "version": "1.0.0",
-  "description": "A dual range bar for slider or scrolling without dependency",
+  "version": "0.1.0",
+  "description": "A dual range slider/scrolling bar without dependency",
   "main": "dist/dual-range-bar.min.js",
   "repository": "https://github.com/celestialphineas/dual-range-bar.git",
   "keywords": [
-    "scroll",
+    "range-slider",
+    "range-picker",
+    "slider",
     "scrollbar"
   ],
   "scripts": {
@@ -14,6 +16,10 @@
   },
   "author": "Celestial Phineas",
   "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/celestialphineas/dual-range-bar/issues"
+  },
+  "homepage": "https://celestialphineas.github.io/dual-range-bar",
   "devDependencies": {
     "@babel/core": "^7.0.0",
     "@babel/preset-env": "^7.0.0",
