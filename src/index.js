@@ -11,5 +11,5 @@ window.addEventListener('load', (event) => {
     for(let i = 0; i < dualVranges.length; i++) { new DualVRange(dualVranges[i]); }
 });
 
-export var hRange = DualHRange;
-export var vRange = DualVRange;
+export var HRange = DualHRange;
+export var VRange = DualVRange;

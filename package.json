@@ -3,13 +3,14 @@
   "version": "1.0.0",
   "description": "A dual range bar for slider or scrolling without dependency",
   "main": "dist/dual-range-bar.min.js",
-  "repository": "https://github.com/celestialphineas/dual-range-bar",
+  "repository": "https://github.com/celestialphineas/dual-range-bar.git",
   "keywords": [
     "scroll",
     "scrollbar"
   ],
   "scripts": {
-    "build": "webpack"
+    "build": "webpack",
+    "test":  "webpack && webpack --config webpack.test.js"
   },
   "author": "Celestial Phineas",
   "license": "MIT",
@@ -21,7 +22,9 @@
     "style-loader": "^0.22.1",
     "ts-loader": "^5.2.1",
     "typescript": "^3.0.3",
+    "uglifyjs-webpack-plugin": "^2.0.1",
     "webpack": "^4.17.1",
     "webpack-cli": "^3.1.0"
-  }
+  },
+  "typings": "./dist/dual-range-bar.d.ts"
 }

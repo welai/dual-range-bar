@@ -65,8 +65,11 @@ export default class DualVRange extends DualRange {
 
     // override
     static getObject(id) {
+        if(typeof DualRange.dict === 'undefined') {
+            DualRange.dict = {};
+        }
         if(typeof DualRange.dict[id] !== 'undefined') {
             return DualRange.dict[id];
-        } else return DualVRange(id);
+        } else return new DualVRange(id);
     }
 }

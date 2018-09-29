@@ -5,16 +5,15 @@
         "noImplicitThis": true,
         "strictNullChecks": true,
         "strictFunctionTypes": true,
-        "baseUrl": "./",
-        "typeRoots": [
-            "./"
-        ],
+        "target": "es3",
         "types": [],
-        "noEmit": true,
+        "typeRoots": [
+            "./dist"
+        ],
         "forceConsistentCasingInFileNames": true
     },
     "files": [
-        "dist/index.d.ts",
-        "dist/dual-range-bar.min.js"
+        "dist/dual-range-bar.min.js",
+        "test/test.ts"
     ]
 }

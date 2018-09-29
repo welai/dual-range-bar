@@ -4,4 +4,3 @@
 
 * Documentation
 * Release
-* TypeScript

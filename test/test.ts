@@ -1,3 +1,4 @@
-import * as m from '../dist/index';
+// import { DualHRange } from '../dist';
+import * as dual from '../dist/dual-range-bar';
 
-console.log(m);
+(window as any)["dual"] = dual;

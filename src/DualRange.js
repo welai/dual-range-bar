@@ -270,14 +270,17 @@ export default class DualRange {
 
     // This static function is used to get the DualRange object
     static getObject(id) {
+        if(typeof DualRange.dict === 'undefined') {
+            DualRange.dict = {};
+        }
         if(typeof DualRange.dict[id] !== 'undefined') {
             return DualRange.dict[id];
         } else {
             let ele = document.getElementById(id);
             if(ele.classList.contains(dualHrangeClassName)) {
-                return DualHRange(id);
+                return new DualHRange(id);
             } else if(ele.classList.contains(dualVrangeClassName)) {
-                return DualVRange(id);
+                return new DualVRange(id);
             } else return null;
         }
     }
