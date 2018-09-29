@@ -65,7 +65,12 @@ export default class DualRange {
         // Add callbacks for re-positioning
         window.addEventListener('resize', () => { this.updatePositions.call(this) });
         window.addEventListener('scroll', () => { this.updatePositions.call(this) });
-        document.body.addEventListener('touchmove', () => { this.updatePositions.call(this) });
+        document.addEventListener('touchstart', () => { this.updatePositions.call(this) });
+        document.addEventListener('touchmove', () => { this.updatePositions.call(this) });
+        document.addEventListener('touchend', () => {
+            // Call the update a little bit afterwards because of the inertial scrolling
+            setTimeout(this.updatePositions.call(this), 500);
+        });
         dualRangeElement.addEventListener('change', () => { this.updatePositions.call(this) });
 
         // Binding mouse events
@@ -142,17 +147,17 @@ export default class DualRange {
         this._rangeMouseOn = false;
         this._lastMouseOn = false;
         this.firstSlider.addEventListener('mouseenter', (event) => { this._firstMouseOn = true; });
-        this.firstSlider.addEventListener('touchstart', (event) => { this._firstMouseOn = true; });
+        this.firstSlider.addEventListener('touchstart', (event) => { DualRange.lockScrolling(); this._firstMouseOn = true; });
         this.rangeSlider.addEventListener('mouseenter', (event) => { this._rangeMouseOn = true; });
-        this.rangeSlider.addEventListener('touchstart', (event) => { this._rangeMouseOn = true; });
-        this.lastSlider.addEventListener('mouseenter', (event) => { this._lastMouseOn = true; });
-        this.lastSlider.addEventListener('touchstart', (event) => { this._lastMouseOn = true; });
+        this.rangeSlider.addEventListener('touchstart', (event) => { DualRange.lockScrolling(); this._rangeMouseOn = true; });
+        this.lastSlider.addEventListener('mouseenter',  (event) => { this._lastMouseOn = true; });
+        this.lastSlider.addEventListener('touchstart',  (event) => { DualRange.lockScrolling(); this._lastMouseOn = true; });
         this.firstSlider.addEventListener('mouseleave', (event) => { this._firstMouseOn = false; });
-        this.firstSlider.addEventListener('touchend', (event) => { this._firstMouseOn = false; });
+        this.firstSlider.addEventListener('touchend',   (event) => { DualRange.unlockScrolling(); this._firstMouseOn = false; });
         this.rangeSlider.addEventListener('mouseleave', (event) => { this._rangeMouseOn = false; });
-        this.rangeSlider.addEventListener('touchend', (event) => { this._rangeMouseOn = false; });
-        this.lastSlider.addEventListener('mouseleave', (event) => { this._lastMouseOn = false; });
-        this.lastSlider.addEventListener('touchend', (event) => { this._lastMouseOn = false; });
+        this.rangeSlider.addEventListener('touchend',   (event) => { DualRange.unlockScrolling(); this._rangeMouseOn = false; });
+        this.lastSlider.addEventListener('mouseleave',  (event) => { this._lastMouseOn = false; });
+        this.lastSlider.addEventListener('touchend',    (event) => { DualRange.unlockScrolling(); this._lastMouseOn = false; });
         var windowMouseDownCallback = (event) => {
             this._latestMouseActiveValue = this.getMouseValue(event);
             [this._firstMouseDown, this._rangeMouseDown, this._lastMouseDown]
@@ -270,6 +275,20 @@ export default class DualRange {
     updateLastPosition(val) {}
     // getMouseValue(event: Event) => number
     getMouseValue(event) { return 0; }
+
+    static _lockEvent(event) { event.preventDefault() }
+    static lockScrolling() {
+        if(!this._isLocked) this._isLocked = true;
+        else return;
+        document.addEventListener('touchstart', this._lockEvent);
+        document.addEventListener('touchmove', this._lockEvent);
+    }
+    static unlockScrolling() {
+        if(this._isLocked) this._isLocked = false;
+        else return;
+        document.removeEventListener('touchstart', this._lockEvent);
+        document.removeEventListener('touchmove', this._lockEvent);
+    }
 
     // This static function is used to get the DualRange object
     static getObject(id) {
