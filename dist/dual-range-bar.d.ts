@@ -16,7 +16,6 @@ declare class DualRange {
     addLowerBoundChangeCallback: (newValue: number) => void;
     addUpperBoundChangeCallback: (newValue: number) => void;
     updatePositions: () => void;
-    getMouseValue: (event: Event) => number;
     static getObject: (id: string) => DualRange | null;
 }
 
