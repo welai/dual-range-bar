@@ -128,6 +128,10 @@ export declare class HRange extends DualRange {}
 export declare class VRange extends DualRange {}
 ```
 
+## Stylizing
+
+See [src/default-style.css](src/default-style.css) and customize the styles in your project.
+
 ## Capability
 
 Any version of Internet Explorer is not supported. But it works fine on Edge and other modern browsers. It is not working well on touch screens when the page is scrolling.
