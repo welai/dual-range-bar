@@ -1,6 +1,10 @@
-# dual-range-bar
+# Dual range bar
 
-## TODO
+A scrolling bar/slider with two sliders that can be used for range scrolling/selection.
 
-* Documentation
-* Release
+Demo: 
+
+## Capability
+
+Any version of Internet Explorer is not supported. But it works fine on Edge and other modern browsers.
+

@@ -10,6 +10,7 @@ export default class DualRange {
 
         // Store this in a static variable
         if(!DualRange.dict) DualRange.dict = {};
+        if(DualRange.dict[htmlElement.id]) return;
         DualRange.dict[htmlElement.id] = this;
 
         var dualRangeElement = this.dualRangeElement = htmlElement;
@@ -64,6 +65,7 @@ export default class DualRange {
         // Add callbacks for re-positioning
         window.addEventListener('resize', () => { this.updatePositions.call(this) });
         window.addEventListener('scroll', () => { this.updatePositions.call(this) });
+        document.body.addEventListener('touchmove', () => { this.updatePositions.call(this) });
         dualRangeElement.addEventListener('change', () => { this.updatePositions.call(this) });
 
         // Binding mouse events
@@ -271,7 +273,7 @@ export default class DualRange {
 
     // This static function is used to get the DualRange object
     static getObject(id) {
-        if(typeof DualRange.dict === 'undefined') {
+        if(!DualRange.dict) {
             DualRange.dict = {};
         }
         if(typeof DualRange.dict[id] !== 'undefined') {

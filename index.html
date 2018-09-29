@@ -8,23 +8,81 @@
   <script src="dist/dual-range-bar.min.js"></script>
 </head>
 <body>
+  <a href="https://github.com/celestialphineas/dual-range-bar"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"></a>
+  <h1 class="title">Dual-range-bar</h1>
   <div class="dual-hrange" id="dhr"></div>
   <div class="dual-vrange" id="dvr"></div>
+  <div class="data">
+    <p><b>Horizontal:</b> (<span id="x1"></span>, <span id="x2"></span>)</p>
+    <p><b>Vertical:</b> (<span id="y1"></span>, <span id="y2"></span>)</p>
+    <div style="text-align:left">
+      <p>Slide the round sliders and the range slider to change the range.</p>
+      <p>Try scroll your mouse wheel on different components of the range bar.</p>
+      <p>For the full spec and usage, see <a href="https://github.com/celestialphineas/dual-range-bar">readme</a>.</p>
+    </div>
+  </div>
 <style>
+body {
+  text-align: center;
+}
+.title {
+  color: #1E88A8;
+  font-weight: 600;
+  font-size: 48pt;
+  line-height: 48pt;
+}
 #dhr {
+  position: relative;
   height: 20px;
-  width: 50%;
-  position: absolute;
+  width: 60%;
   left: 20%;
-  top: 100px;
 }
 #dvr {
-  height: 200px;
   width: 20px;
   position: absolute;
-  left: 20px;
-  top: 230px;
+  right: 10%;
+  top: 150px;
+  bottom: 50px;
+}
+.data {
+  color: #1E88A8;
+  position: relative;
+  font-size: 20px;
+  top: 100px;
+  width: 320px;
+  margin: auto;
+}
+a {
+  font-style: italic;
+  text-decoration: none;
+  color: #1E88A8;
+}
+a:hover {
+  text-decoration: underline;
 }
 </style>
 </body>
+<script>
+var horizontalBar = dual.HRange.getObject('dhr');
+var verticalBar = dual.VRange.getObject('dvr');
+
+document.getElementById('x1').innerHTML = horizontalBar.lowerRange.toFixed(2);
+document.getElementById('x2').innerHTML = horizontalBar.upperRange.toFixed(2);
+document.getElementById('y1').innerHTML = horizontalBar.lowerRange.toFixed(2);
+document.getElementById('y2').innerHTML = horizontalBar.upperRange.toFixed(2);
+
+horizontalBar.addLowerRangeChangeCallback(function(val) {
+  document.getElementById('x1').innerHTML = val.toFixed(2);
+});
+horizontalBar.addUpperRangeChangeCallback(function(val) {
+  document.getElementById('x2').innerHTML = val.toFixed(2);
+});
+verticalBar.addLowerRangeChangeCallback(function(val) {
+  document.getElementById('y1').innerHTML = val.toFixed(2);
+});
+verticalBar.addUpperRangeChangeCallback(function(val) {
+  document.getElementById('y2').innerHTML = val.toFixed(2);
+});
+
+</script>
 </html>

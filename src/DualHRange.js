@@ -4,6 +4,7 @@ import def from './definitions';
 export default class DualHRange extends DualRange {
     constructor(htmlElement) {
         super(htmlElement);
+        if(DualRange.dict[htmlElement.id]) return;
         [
             this.backgroundDiv,
             this.firstSliderContainer, this.firstSlider,
@@ -65,7 +66,7 @@ export default class DualHRange extends DualRange {
 
     // override
     static getObject(id) {
-        if(typeof DualRange.dict === 'undefined') {
+        if(!DualRange.dict) {
             DualRange.dict = {};
         }
         if(typeof DualRange.dict[id] !== 'undefined') {
