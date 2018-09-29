@@ -13,6 +13,7 @@ export default class DualRange {
         DualRange.dict[htmlElement.id] = this;
 
         var dualRangeElement = this.dualRangeElement = htmlElement;
+        dualRangeElement.style.textAlign = 'left';
 
         this.backgroundDiv          = document.createElement('div');
         this.backgroundDiv.classList.add(def.backgroundClass);
