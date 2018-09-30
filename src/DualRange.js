@@ -7,6 +7,7 @@ export default class DualRange {
         if(typeof htmlElement === 'string') {
             htmlElement = document.getElementById(htmlElement);
         }
+        this.htmlElement = htmlElement;
 
         // Store this in a static variable
         if(!DualRange.dict) DualRange.dict = {};

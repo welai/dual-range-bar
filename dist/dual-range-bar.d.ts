@@ -5,12 +5,14 @@
 
 // import dual from 'dist/dual-range-bar.min.js';
 declare class DualRange {
+    constructor(element: HTMLElement | string);
     lowerBound: number;
     upperBound: number;
     lowerRange: number;
     upperRange: number;
     relativeLower: number;
     relativeUpper: number;
+    htmlElement: HTMLElement;
     addLowerRangeChangeCallback: (newValue: number) => void;
     addUpperRangeChangeCallback: (newValue: number) => void;
     addLowerBoundChangeCallback: (newValue: number) => void;
