@@ -23,7 +23,7 @@
 
 .dual-range, .dual-container {
     display: inline-block;
-    position: fixed;
+    position: absolute;
 }
 .dual-range.dual-container {
     z-index: 2;

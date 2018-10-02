@@ -134,12 +134,11 @@ See [src/default-style.css](src/default-style.css) and customize the styles in y
 
 ## Capability
 
-Any version of Internet Explorer is not supported. But it works fine on Edge and other modern browsers. It is not working well on touch screens when the page is scrolling.
+Any version of Internet Explorer is not supported. But it works fine on Edge and other modern browsers.
 
 ## TODO
 
 * A method to remove a bar
-* Fix the known issues
 
 ## Contributions
 

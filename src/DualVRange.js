@@ -15,16 +15,13 @@ export default class DualVRange extends DualRange {
         super.updatePositions();
     }
     _updateVerticalPosition(val, container) {
-        let offsetTop = this.dualRangeElement.offsetTop;
-        let offsetLeft = this.dualRangeElement.offsetLeft;
         let eleWidth = this.dualRangeElement.clientWidth;
         let eleHeight = this.dualRangeElement.clientHeight;
         let percentage = val;
 
-        let top = offsetTop + percentage * eleHeight - this.firstSliderContainer.clientHeight/2;
-        let left = offsetLeft;
-        container.style.top = `${top - window.scrollY}px`;
-        container.style.left = `${left - window.scrollX}px`;
+        let top = percentage * eleHeight - this.firstSliderContainer.clientHeight/2;
+        container.style.top = `${top}px`;
+        container.style.left = '0px';
         container.style.width = `${eleWidth}px`;
     }
     // override
@@ -38,8 +35,7 @@ export default class DualVRange extends DualRange {
             let oldHeight = this.rangeSliderContainer.clientHeight;
             let oldBottom = oldTop + oldHeight;
             let percentage = val1;
-            let newTop = this.dualRangeElement.offsetTop - window.scrollY
-                + percentage * this.dualRangeElement.clientHeight;
+            let newTop = percentage * this.dualRangeElement.clientHeight;
             let newHeight = oldBottom - newTop;
             this.rangeSliderContainer.style.top = `${newTop}px`;
             this.rangeSliderContainer.style.height = `${newHeight}px`;
@@ -48,18 +44,17 @@ export default class DualVRange extends DualRange {
         if(typeof val2 === 'number' && !isNaN(val2)) {
             let oldTop = this.rangeSliderContainer.offsetTop;
             let percentage = val2;
-            let newBottom = this.dualRangeElement.offsetTop
-                + percentage * this.dualRangeElement.clientHeight;
+            let newBottom = percentage * this.dualRangeElement.clientHeight;
             let newHeight = newBottom - oldTop;
-            this.rangeSliderContainer.style.height = `${newHeight - window.scrollY}px`;
+            this.rangeSliderContainer.style.height = `${newHeight}px`;
         }
 
-        this.rangeSliderContainer.style.left = `${this.dualRangeElement.offsetLeft - window.scrollX}px`;
+        this.rangeSliderContainer.style.left = '0px';
         this.rangeSliderContainer.style.width = `${this.dualRangeElement.clientWidth}px`;
     }
     getMouseValue(event) {
-        let clientY = event.touches ? event.touches.item(0).clientY : event.clientY;
-        let relativeY = clientY - this.dualRangeElement.offsetTop + window.scrollY;
+        let clientY = event.touches ? event.touches.item(0).pageY : event.pageY;
+        let relativeY = clientY - DualRange._getOffsetY(this.dualRangeElement);
         let percentage = relativeY / this.dualRangeElement.clientHeight;
         return percentage;
     }

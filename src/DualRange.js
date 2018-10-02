@@ -148,17 +148,17 @@ export default class DualRange {
         this._rangeMouseOn = false;
         this._lastMouseOn = false;
         this.firstSlider.addEventListener('mouseenter', (event) => { this._firstMouseOn = true; });
-        this.firstSlider.addEventListener('touchstart', (event) => { DualRange.lockScrolling(); this._firstMouseOn = true; });
+        this.firstSlider.addEventListener('touchstart', (event) => { event.preventDefault(); this._firstMouseOn = true; });
         this.rangeSlider.addEventListener('mouseenter', (event) => { this._rangeMouseOn = true; });
-        this.rangeSlider.addEventListener('touchstart', (event) => { DualRange.lockScrolling(); this._rangeMouseOn = true; });
+        this.rangeSlider.addEventListener('touchstart', (event) => { event.preventDefault(); this._rangeMouseOn = true; });
         this.lastSlider.addEventListener('mouseenter',  (event) => { this._lastMouseOn = true; });
-        this.lastSlider.addEventListener('touchstart',  (event) => { DualRange.lockScrolling(); this._lastMouseOn = true; });
+        this.lastSlider.addEventListener('touchstart',  (event) => { event.preventDefault(); this._lastMouseOn = true; });
         this.firstSlider.addEventListener('mouseleave', (event) => { this._firstMouseOn = false; });
-        this.firstSlider.addEventListener('touchend',   (event) => { DualRange.unlockScrolling(); this._firstMouseOn = false; });
+        this.firstSlider.addEventListener('touchend',   (event) => { this._firstMouseOn = false; });
         this.rangeSlider.addEventListener('mouseleave', (event) => { this._rangeMouseOn = false; });
-        this.rangeSlider.addEventListener('touchend',   (event) => { DualRange.unlockScrolling(); this._rangeMouseOn = false; });
+        this.rangeSlider.addEventListener('touchend',   (event) => { this._rangeMouseOn = false; });
         this.lastSlider.addEventListener('mouseleave',  (event) => { this._lastMouseOn = false; });
-        this.lastSlider.addEventListener('touchend',    (event) => { DualRange.unlockScrolling(); this._lastMouseOn = false; });
+        this.lastSlider.addEventListener('touchend',    (event) => { this._lastMouseOn = false; });
         var windowMouseDownCallback = (event) => {
             this._latestMouseActiveValue = this.getMouseValue(event);
             [this._firstMouseDown, this._rangeMouseDown, this._lastMouseDown]
@@ -219,6 +219,7 @@ export default class DualRange {
         window.addEventListener('mousemove', windowMouseMoveCallback);
         window.addEventListener('touchmove', windowMouseMoveCallback);
         this.rangeSlider.addEventListener('mousewheel', (event) => {
+            event.preventDefault();
             let val = this.getMouseValue(event);
             let d = event.wheelDelta/1000;
             let expectedLowerRange = this._relativeLower + (val - this._relativeLower) * d;
@@ -236,6 +237,7 @@ export default class DualRange {
             this.relativeUpper = expectedUpperRange;
         });
         this.backgroundDiv.addEventListener('mousewheel', (event) => {
+            event.preventDefault();
             let d = -event.wheelDelta/2500;
             let expectedLowerRange = this._relativeLower + d;
             let expectedUpperRange = this._relativeUpper + d;
@@ -277,20 +279,6 @@ export default class DualRange {
     // getMouseValue(event: Event) => number
     getMouseValue(event) { return 0; }
 
-    static _lockEvent(event) { event.preventDefault() }
-    static lockScrolling() {
-        if(!this._isLocked) this._isLocked = true;
-        else return;
-        document.addEventListener('touchstart', this._lockEvent);
-        document.addEventListener('touchmove', this._lockEvent);
-    }
-    static unlockScrolling() {
-        if(this._isLocked) this._isLocked = false;
-        else return;
-        document.removeEventListener('touchstart', this._lockEvent);
-        document.removeEventListener('touchmove', this._lockEvent);
-    }
-
     // This static function is used to get the DualRange object
     static getObject(id) {
         if(!DualRange.dict) {
@@ -306,5 +294,23 @@ export default class DualRange {
                 return new DualVRange(id);
             } else return null;
         }
+    }
+
+    // Compute the position relative to the document
+    static _getOffsetY(element) {
+        var box = element.getBoundingClientRect();
+        var body = document.body;
+        var docElement = document.documentElement;
+        var clientTop = docElement.clientTop || body.clientTop || 0;
+        var scrollTop = window.pageYOffset || docElement.scrollTop || body.scrollTop;
+        return Math.round(box.top + scrollTop - clientTop);
+    }
+    static _getOffsetX(element) {
+        var box = element.getBoundingClientRect();
+        var body = document.body;
+        var docElement = document.documentElement;
+        var clientLeft = docElement.clientLeft || body.clientLeft || 0;
+        var scrollLeft = window.pageXOffset || docElement.scrollLeft || body.scrollLeft;
+        return Math.round(box.left + scrollLeft - clientLeft);
     }
 }
