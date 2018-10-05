@@ -218,10 +218,10 @@ export default class DualRange {
         };
         window.addEventListener('mousemove', windowMouseMoveCallback);
         window.addEventListener('touchmove', windowMouseMoveCallback);
-        this.rangeSlider.addEventListener('mousewheel', (event) => {
+        var rangeWheelEvent = (event) => {
             event.preventDefault();
             let val = this.getMouseValue(event);
-            let d = event.wheelDelta/1000;
+            let d = (event.wheelDelta || -event.detail * 120 || -event.deltaY * 120)/1000;
             let expectedLowerRange = this._relativeLower + (val - this._relativeLower) * d;
             let expectedUpperRange = this._relativeUpper - (this._relativeUpper - val) * d;
             if(expectedLowerRange < 0) expectedLowerRange = 0;
@@ -235,10 +235,12 @@ export default class DualRange {
             }
             this.relativeLower = expectedLowerRange;
             this.relativeUpper = expectedUpperRange;
-        });
-        this.backgroundDiv.addEventListener('mousewheel', (event) => {
+        };
+        this.rangeSlider.addEventListener('mousewheel', rangeWheelEvent);
+        this.rangeSlider.addEventListener('DOMMouseScroll', rangeWheelEvent);
+        var backgroundWheelEvent = (event) => {
             event.preventDefault();
-            let d = -event.wheelDelta/2500;
+            let d = (event.wheelDelta || -event.detail * 120 || -event.deltaY * 120)/2500;
             let expectedLowerRange = this._relativeLower + d;
             let expectedUpperRange = this._relativeUpper + d;
             if(expectedLowerRange < 0) {
@@ -251,7 +253,9 @@ export default class DualRange {
             }
             this.relativeLower = expectedLowerRange;
             this.relativeUpper = expectedUpperRange;
-        });
+        };
+        this.backgroundDiv.addEventListener('mousewheel', backgroundWheelEvent);
+        this.backgroundDiv.addEventListener('DOMMouseScroll', backgroundWheelEvent);
     }
     // callback: (newValue: number) => void
     addLowerRangeChangeCallback(callback) { this._setLowerRangeCallbacks.push(callback); }
