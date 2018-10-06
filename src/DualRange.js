@@ -240,7 +240,7 @@ export default class DualRange {
         this.rangeSlider.addEventListener('DOMMouseScroll', rangeWheelEvent);
         var backgroundWheelEvent = (event) => {
             event.preventDefault();
-            let d = (event.wheelDelta || -event.detail * 120 || -event.deltaY * 120)/2500;
+            let d = (-event.wheelDelta || event.detail * 120 || event.deltaY * 120)/2500;
             let expectedLowerRange = this._relativeLower + d;
             let expectedUpperRange = this._relativeUpper + d;
             if(expectedLowerRange < 0) {
