@@ -262,6 +262,10 @@ export default class DualRange {
     addUpperRangeChangeCallback(callback) { this._setUpperRangeCallbacks.push(callback); }
     addLowerBoundChangeCallback(callback) { this._setLowerBoundCallbacks.push(callback); }
     addUpperBoundChangeCallback(callback) { this._setUpperBoundCallbacks.push(callback); }
+    removeLowerRangeChangeCallback(callback) { let a = this._setLowerRangeCallbacks; let i = a.indexOf(callback); if (i !== -1) a.splice(i, 1); }
+    removeUpperRangeChangeCallback(callback) { let a = this._setUpperRangeCallbacks; let i = a.indexOf(callback); if (i !== -1) a.splice(i, 1); }
+    removeLowerBoundChangeCallback(callback) { let a = this._setLowerBoundCallbacks; let i = a.indexOf(callback); if (i !== -1) a.splice(i, 1); }
+    removeUpperBoundChangeCallback(callback) { let a = this._setUpperBoundCallbacks; let i = a.indexOf(callback); if (i !== -1) a.splice(i, 1); }
 
     createInHrangeElements() {
         this.dualRangeElement.appendChild(this.backgroundDiv);

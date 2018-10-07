@@ -13,10 +13,14 @@ declare class DualRange {
     relativeLower: number;
     relativeUpper: number;
     htmlElement: HTMLElement;
-    addLowerRangeChangeCallback: (newValue: number) => void;
-    addUpperRangeChangeCallback: (newValue: number) => void;
-    addLowerBoundChangeCallback: (newValue: number) => void;
-    addUpperBoundChangeCallback: (newValue: number) => void;
+    addLowerRangeChangeCallback: (callback: (newValue: number) => void) => void;
+    addUpperRangeChangeCallback: (callback: (newValue: number) => void) => void;
+    addLowerBoundChangeCallback: (callback: (newValue: number) => void) => void;
+    addUpperBoundChangeCallback: (callback: (newValue: number) => void) => void;
+    removeLowerRangeChangeCallback: (callback: (newValue: number) => void) => void;
+    removeUpperRangeChangeCallback: (callback: (newValue: number) => void) => void;
+    removeLowerBoundChangeCallback: (callback: (newValue: number) => void) => void;
+    removeUpperBoundChangeCallback: (callback: (newValue: number) => void) => void;
     updatePositions: () => void;
     static getObject: (id: string) => DualRange | null;
 }
