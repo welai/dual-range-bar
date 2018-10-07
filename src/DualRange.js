@@ -51,6 +51,9 @@ export default class DualRange {
         // Function type: (newValue: number) => void
         this._setLowerBoundCallbacks = [];
         this._setUpperBoundCallbacks = [];
+        // Function type: (newValue: number) => void
+        this._setLowerRangeCallbacks = [];
+        this._setUpperRangeCallbacks = [];
 
         this._minDifference = getEleAttVal(def.minDiffAtt, 0.1);
         this._relativeDifference = Math.abs(this._minDifference/(this._upperBound - this._lowerBound));
@@ -59,9 +62,8 @@ export default class DualRange {
             this._relativeDifference = 0.1;
             this._minDifference = _relativeDifference * (this._upperBound - this._lowerBound);
         }
-        // Function type: (newValue: number) => void
-        this._setLowerRangeCallbacks = [];
-        this._setUpperRangeCallbacks = [];
+        this._setMinDifferenceChangeCallbacks = [];
+        this._setRelativeDifferenceChangeCallbacks = [];
 
         // Add callbacks for re-positioning
         window.addEventListener('resize', () => { this.updatePositions.call(this) });
@@ -122,6 +124,23 @@ export default class DualRange {
             fun.apply(window, [newVal]);
         });
     }
+    get minDifference() { return this._minDifference; }
+    set minDifference(newVal) {
+        this._minDifference = newVal;
+        this._relativeDifference = Math.abs(newVal/(this._upperBound - this._lowerBound));
+        this._setMinDifferenceChangeCallbacks.forEach((fun) => {
+            fun.apply(window, [newVal]);
+        })
+    }
+    get relativeDifference() { return this._relativeDifference; }
+    set relativeDifference(newVal) {
+        this._relativeDifference = newVal;
+        this._minDifference = (this._upperBound - this.lowerBound) * newVal;
+        this._setRelativeDifferenceChangeCallbacks.forEach((fun) => {
+            fun.apply(window, [newVal]);
+        })
+    }
+    
     get relativeLower() { return this._relativeLower; }
     set relativeLower(newVal) {
         this._relativeLower = newVal;
@@ -262,10 +281,14 @@ export default class DualRange {
     addUpperRangeChangeCallback(callback) { this._setUpperRangeCallbacks.push(callback); }
     addLowerBoundChangeCallback(callback) { this._setLowerBoundCallbacks.push(callback); }
     addUpperBoundChangeCallback(callback) { this._setUpperBoundCallbacks.push(callback); }
+    addMinDifferenceChangeCallback(callback) { this._setMinDifferenceChangeCallbacks.push(callback); }
+    addRelativeDifferenceChangeCallback(callback) { this._setRelativeDifferenceChangeCallbacks.push(callback); }
     removeLowerRangeChangeCallback(callback) { let a = this._setLowerRangeCallbacks; let i = a.indexOf(callback); if (i !== -1) a.splice(i, 1); }
     removeUpperRangeChangeCallback(callback) { let a = this._setUpperRangeCallbacks; let i = a.indexOf(callback); if (i !== -1) a.splice(i, 1); }
     removeLowerBoundChangeCallback(callback) { let a = this._setLowerBoundCallbacks; let i = a.indexOf(callback); if (i !== -1) a.splice(i, 1); }
     removeUpperBoundChangeCallback(callback) { let a = this._setUpperBoundCallbacks; let i = a.indexOf(callback); if (i !== -1) a.splice(i, 1); }
+    removeMinDifferenceChangeCallback(callback) { let a = this._setMinDifferenceChangeCallbacks; let i = a.indexOf(callback); if (i !== -1) a.splice(i, 1); }
+    removeRelativeDifferenceChangeCallback(callback) { let a = this._setRelativeDifferenceChangeCallbacks; let i = a.indexOf(callback); if (i !== -1) a.splice(i, 1); }
 
     createInHrangeElements() {
         this.dualRangeElement.appendChild(this.backgroundDiv);

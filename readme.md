@@ -109,23 +109,29 @@ You may not need to use the HTML attributes any more. Import the module and use 
 
 ```typescript
 declare class DualRange {
+    constructor(element: HTMLElement | string);
     lowerBound: number;
     upperBound: number;
     lowerRange: number;
     upperRange: number;
     relativeLower: number;
     relativeUpper: number;
-    addLowerRangeChangeCallback: (newValue: number) => void;
-    addUpperRangeChangeCallback: (newValue: number) => void;
-    addLowerBoundChangeCallback: (newValue: number) => void;
-    addUpperBoundChangeCallback: (newValue: number) => void;
-    // Update the position of divs
+    htmlElement: HTMLElement;
+    addLowerRangeChangeCallback: (callback: (newVal: number) => void) => void;
+    addUpperRangeChangeCallback: (callback: (newVal: number) => void) => void;
+    addLowerBoundChangeCallback: (callback: (newVal: number) => void) => void;
+    addUpperBoundChangeCallback: (callback: (newVal: number) => void) => void;
+    addMinDifferenceChangeCallback: (callback: (newVal: number) => void) => void;
+    addRelativeDifferenceChangeCallback: (callback: (newVal: number) => void) => void;
+    removeLowerRangeChangeCallback: (callback: (newVal: number) => void) => void;
+    removeUpperRangeChangeCallback: (callback: (newVal: number) => void) => void;
+    removeLowerBoundChangeCallback: (callback: (newVal: number) => void) => void;
+    removeUpperBoundChangeCallback: (callback: (newVal: number) => void) => void;
+    removeMinDifferenceChangeCallback: (callback: (newVal: number) => void) => void;
+    removeRelativeDifferenceChangeCallback: (callback: (newVal: number) => void) => void;
     updatePositions: () => void;
     static getObject: (id: string) => DualRange | null;
 }
-
-export declare class HRange extends DualRange {}
-export declare class VRange extends DualRange {}
 ```
 
 ## Stylizing

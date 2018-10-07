@@ -13,14 +13,18 @@ declare class DualRange {
     relativeLower: number;
     relativeUpper: number;
     htmlElement: HTMLElement;
-    addLowerRangeChangeCallback: (callback: (newValue: number) => void) => void;
-    addUpperRangeChangeCallback: (callback: (newValue: number) => void) => void;
-    addLowerBoundChangeCallback: (callback: (newValue: number) => void) => void;
-    addUpperBoundChangeCallback: (callback: (newValue: number) => void) => void;
-    removeLowerRangeChangeCallback: (callback: (newValue: number) => void) => void;
-    removeUpperRangeChangeCallback: (callback: (newValue: number) => void) => void;
-    removeLowerBoundChangeCallback: (callback: (newValue: number) => void) => void;
-    removeUpperBoundChangeCallback: (callback: (newValue: number) => void) => void;
+    addLowerRangeChangeCallback: (callback: (newVal: number) => void) => void;
+    addUpperRangeChangeCallback: (callback: (newVal: number) => void) => void;
+    addLowerBoundChangeCallback: (callback: (newVal: number) => void) => void;
+    addUpperBoundChangeCallback: (callback: (newVal: number) => void) => void;
+    addMinDifferenceChangeCallback: (callback: (newVal: number) => void) => void;
+    addRelativeDifferenceChangeCallback: (callback: (newVal: number) => void) => void;
+    removeLowerRangeChangeCallback: (callback: (newVal: number) => void) => void;
+    removeUpperRangeChangeCallback: (callback: (newVal: number) => void) => void;
+    removeLowerBoundChangeCallback: (callback: (newVal: number) => void) => void;
+    removeUpperBoundChangeCallback: (callback: (newVal: number) => void) => void;
+    removeMinDifferenceChangeCallback: (callback: (newVal: number) => void) => void;
+    removeRelativeDifferenceChangeCallback: (callback: (newVal: number) => void) => void;
     updatePositions: () => void;
     static getObject: (id: string) => DualRange | null;
 }
