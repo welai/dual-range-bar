@@ -194,22 +194,23 @@ export default class DualRange {
         this._setRelativeMinDifferenceChangeCallbacks.forEach((fun) => {
             fun.apply(window, [newVal]);
         });
-		if(this._relativeUpper - this._relativeLower > this._relativeMaxDifference) {
-			this.relativeUpper = this._relativeLower + this._relativeMaxDifference;
-		}
         this.updatePositions();
     }
     setRelativeMaxDifference(newVal) {
         this._relativeMaxDifference = newVal;
         this._maxDifference = (this._upperBound - this.lowerBound) * newVal;
         this.updatePositions();
-    }get relativeMaxDifference() { return this._relativeMaxDifference; }
+    }
+    get relativeMaxDifference() { return this._relativeMaxDifference; }
     set relativeMaxDifference(newVal) {
         this._relativeMaxDifference = newVal;
         this._maxDifference = (this._upperBound - this.lowerBound) * newVal;
         this._setRelativeMaxDifferenceChangeCallbacks.forEach((fun) => {
             fun.apply(window, [newVal]);
         });
+		if(this._relativeUpper - this._relativeLower > this._relativeMaxDifference) {
+			this.relativeUpper = this._relativeLower + this._relativeMaxDifference;
+		}
         this.updatePositions();
     }
     setRelativeMaxDifference(newVal) {
