@@ -13,7 +13,6 @@
         "forceConsistentCasingInFileNames": true
     },
     "files": [
-        "dist/dual-range-bar.min.js",
         "test/test.ts"
     ]
 }

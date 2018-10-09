@@ -59,6 +59,9 @@ export default class DualRange {
         this._maxDifference = getEleAttVal(def.maxDiffAtt, 1.0);
         this._relativeMinDifference = Math.abs(this._minDifference/(this._upperBound - this._lowerBound));
         this._relativeMaxDifference = Math.abs(this._maxDifference/(this._upperBound - this._lowerBound));
+		if(this._relativeUpper - this._relativeLower > this._relativeMaxDifference) {
+			this._relativeUpper = this._relativeLower + this._relativeMaxDifference;
+		}
         if(this._relativeMinDifference < 0.05 || this._relativeMinDifference > 1) {
             console.warn(`Invalid setting of ${def.minDiffAtt}, restored to default 0.1`);
             this._relativeMinDifference = 0.1;
@@ -99,10 +102,10 @@ export default class DualRange {
         });
         this.addLowerBoundChangeCallback((val) => {
             this.updatePositions();
-        })
+        });
         this.addUpperBoundChangeCallback((val) => {
             this.updatePositions();
-        })
+        });
     }
     // Value members
     get lowerBound() { return this._lowerBound; }
@@ -173,7 +176,10 @@ export default class DualRange {
         this._relativeMaxDifference = Math.abs(newVal/(this._upperBound - this._lowerBound));
         this._setMaxDifferenceChangeCallbacks.forEach((fun) => {
             fun.apply(window, [newVal]);
-        });
+		});
+		if(this._relativeUpper - this._relativeLower > this._relativeMaxDifference) {
+			this.relativeUpper = this._relativeLower + this._relativeMaxDifference;
+		}
         this.updatePositions();
     }
     setMaxDifference(newVal) {
@@ -188,6 +194,9 @@ export default class DualRange {
         this._setRelativeMinDifferenceChangeCallbacks.forEach((fun) => {
             fun.apply(window, [newVal]);
         });
+		if(this._relativeUpper - this._relativeLower > this._relativeMaxDifference) {
+			this.relativeUpper = this._relativeLower + this._relativeMaxDifference;
+		}
         this.updatePositions();
     }
     setRelativeMaxDifference(newVal) {
@@ -336,7 +345,7 @@ export default class DualRange {
                     expectedUpperRange = this._relativeMinDifference;
                 }
             } else if(expectedUpperRange - expectedLowerRange > this._relativeMaxDifference) {
-				expectedUpperRange = expectedLowerRange + this._relativeMaxDifference;
+                expectedLowerRange = expectedUpperRange - this._relativeMaxDifference;
 				if(expectedUpperRange > 1) {
 					expectedUpperRange = 1;
 					expectedLowerRange = 1 - this._relativeMaxDifference;
