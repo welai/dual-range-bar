@@ -103,12 +103,18 @@ export default class DualRange {
             fun.apply(window, [newVal]);
         });
     }
+    setLowerBound(newVal) {
+        this._lowerBound = newVal;
+    };
     get upperBound() { return this._upperBound; }
     set upperBound(newVal) {
         this._upperBound = newVal;
         this._setUpperBoundCallbacks.forEach((fun) => {
             fun.apply(window, [newVal]);
         });
+    }
+    setUpperBound(newVal) {
+        this._upperBound = newVal;
     }
     get lowerRange() { return this._relativeLower * (this._upperBound - this._lowerBound) + this._lowerBound; }
     set lowerRange(newVal) {
@@ -117,12 +123,18 @@ export default class DualRange {
             fun.apply(window, [newVal]);
         });
     }
+    setLowerRange(newVal) {
+        this._relativeLower = (newVal - this._lowerBound)/(this._upperBound - this._lowerBound);
+    }
     get upperRange() { return this._relativeUpper * (this._upperBound - this._lowerBound) + this._lowerBound; }
     set upperRange(newVal) {
         this._relativeUpper = (newVal - this._lowerBound)/(this._upperBound - this._lowerBound);
         this._setUpperRangeCallbacks.forEach((fun) => {
             fun.apply(window, [newVal]);
         });
+    }
+    setUpperRange(newVal) {
+        this._relativeUpper = (newVal - this._lowerBound)/(this._upperBound - this._lowerBound);
     }
     get minDifference() { return this._minDifference; }
     set minDifference(newVal) {
@@ -132,6 +144,10 @@ export default class DualRange {
             fun.apply(window, [newVal]);
         })
     }
+    setDifference(newVal) {
+        this._minDifference = newVal;
+        this._relativeDifference = Math.abs(newVal/(this._upperBound - this._lowerBound));
+    }
     get relativeDifference() { return this._relativeDifference; }
     set relativeDifference(newVal) {
         this._relativeDifference = newVal;
@@ -139,6 +155,10 @@ export default class DualRange {
         this._setRelativeDifferenceChangeCallbacks.forEach((fun) => {
             fun.apply(window, [newVal]);
         })
+    }
+    setRelativeDifference(newVal) {
+        this._relativeDifference = newVal;
+        this._minDifference = (this._upperBound - this.lowerBound) * newVal;
     }
     
     get relativeLower() { return this._relativeLower; }
@@ -148,12 +168,18 @@ export default class DualRange {
             fun.apply(window, [newVal]);
         });
     }
+    setRelativeLower(newVal) {
+        this._relativeLower = newVal;
+    }
     get relativeUpper() { return this._relativeUpper; }
     set relativeUpper(newVal) {
         this._relativeUpper = newVal;
         this._setUpperRangeCallbacks.forEach((fun) => {
             fun.apply(window, [newVal]);
         });
+    }
+    setRelativeUpper(newVal) {
+        this._relativeUpper = newVal;
     }
     // Methods
     _bindMouseEvents() {

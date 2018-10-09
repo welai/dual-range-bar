@@ -14,14 +14,15 @@ declare class DualRange {
     relativeUpper: number;
     minDifference: number;
     relativeDifference: number;
-    _lowerBound: number;
-    _upperBound: number;
-    _lowerRange: number;
-    _upperRange: number;
-    _relativeLower: number;
-    _relativeUpper: number;
-    _minDifference: number;
-    _relativeDifference: number;
+    // These setting functions won't call the callbacks
+    setLowerBound: (newVal: number) => void;
+    setUpperBound: (newVal: number) => void;
+    setLowerRange: (newVal: number) => void;
+    setUpperRange: (newVal: number) => void;
+    setRelativeLower: (newVal: number) => void;
+    setRelativeUpper: (newVal: number) => void;
+    setMinDifference: (newVal: number) => void;
+    setRelativeDifference: (newVal: number) => void;
     htmlElement: HTMLElement;
     addLowerRangeChangeCallback: (callback: (newVal: number) => void) => void;
     addUpperRangeChangeCallback: (callback: (newVal: number) => void) => void;

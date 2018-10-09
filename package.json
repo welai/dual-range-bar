@@ -1,6 +1,6 @@
 {
   "name": "dual-range-bar",
-  "version": "0.1.10",
+  "version": "0.1.11",
   "description": "A dual range slider/scrolling bar without dependency",
   "main": "dist/dual-range-bar.min.js",
   "repository": "https://github.com/celestialphineas/dual-range-bar.git",
