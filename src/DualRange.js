@@ -56,14 +56,23 @@ export default class DualRange {
         this._setUpperRangeCallbacks = [];
 
         this._minDifference = getEleAttVal(def.minDiffAtt, 0.1);
-        this._relativeDifference = Math.abs(this._minDifference/(this._upperBound - this._lowerBound));
-        if(this._relativeDifference < 0.05 || this._relativeDifference > 1) {
+        this._maxDifference = getEleAttVal(def.maxDiffAtt, 1.0);
+        this._relativeMinDifference = Math.abs(this._minDifference/(this._upperBound - this._lowerBound));
+        this._relativeMaxDifference = Math.abs(this._maxDifference/(this._upperBound - this._lowerBound));
+        if(this._relativeMinDifference < 0.05 || this._relativeMinDifference > 1) {
             console.warn(`Invalid setting of ${def.minDiffAtt}, restored to default 0.1`);
-            this._relativeDifference = 0.1;
-            this._minDifference = _relativeDifference * (this._upperBound - this._lowerBound);
+            this._relativeMinDifference = 0.1;
+            this._minDifference = _relativeMinDifference * (this._upperBound - this._lowerBound);
+        }
+        if(this._relativeMaxDifference < 0.05 || this._relativeMaxDifference > 1) {
+            console.warn(`Invalid setting of ${def.maxDiffAtt}, restored to default 0.1`);
+            this._relativeMaxDifference = 0.1;
+            this._maxDifference = _relativeMaxDifference * (this._upperBound - this._lowerBound);
         }
         this._setMinDifferenceChangeCallbacks = [];
-        this._setRelativeDifferenceChangeCallbacks = [];
+        this._setMaxDifferenceChangeCallbacks = [];
+        this._setRelativeMinDifferenceChangeCallbacks = [];
+        this._setRelativeMaxDifferenceChangeCallbacks = [];
 
         // Add callbacks for re-positioning
         window.addEventListener('resize', () => { this.updatePositions.call(this) });
@@ -147,29 +156,56 @@ export default class DualRange {
     get minDifference() { return this._minDifference; }
     set minDifference(newVal) {
         this._minDifference = newVal;
-        this._relativeDifference = Math.abs(newVal/(this._upperBound - this._lowerBound));
+        this._relativeMinDifference = Math.abs(newVal/(this._upperBound - this._lowerBound));
         this._setMinDifferenceChangeCallbacks.forEach((fun) => {
             fun.apply(window, [newVal]);
         });
         this.updatePositions();
     }
-    setDifference(newVal) {
+    setMinDifference(newVal) {
         this._minDifference = newVal;
-        this._relativeDifference = Math.abs(newVal/(this._upperBound - this._lowerBound));
+        this._relativeMinDifference = Math.abs(newVal/(this._upperBound - this._lowerBound));
         this.updatePositions();
-    }
-    get relativeDifference() { return this._relativeDifference; }
-    set relativeDifference(newVal) {
-        this._relativeDifference = newVal;
-        this._minDifference = (this._upperBound - this.lowerBound) * newVal;
-        this._setRelativeDifferenceChangeCallbacks.forEach((fun) => {
+	}
+	get maxDifference() { return this._maxDifference; }
+    set maxDifference(newVal) {
+        this._maxDifference = newVal;
+        this._relativeMaxDifference = Math.abs(newVal/(this._upperBound - this._lowerBound));
+        this._setMaxDifferenceChangeCallbacks.forEach((fun) => {
             fun.apply(window, [newVal]);
         });
         this.updatePositions();
     }
-    setRelativeDifference(newVal) {
-        this._relativeDifference = newVal;
+    setMaxDifference(newVal) {
+        this._maxDifference = newVal;
+        this._relativeMaxDifference = Math.abs(newVal/(this._upperBound - this._lowerBound));
+        this.updatePositions();
+    }
+    get relativeMinDifference() { return this._relativeMinDifference; }
+    set relativeMinDifference(newVal) {
+        this._relativeMinDifference = newVal;
         this._minDifference = (this._upperBound - this.lowerBound) * newVal;
+        this._setRelativeMinDifferenceChangeCallbacks.forEach((fun) => {
+            fun.apply(window, [newVal]);
+        });
+        this.updatePositions();
+    }
+    setRelativeMaxDifference(newVal) {
+        this._relativeMaxDifference = newVal;
+        this._maxDifference = (this._upperBound - this.lowerBound) * newVal;
+        this.updatePositions();
+    }get relativeMaxDifference() { return this._relativeMaxDifference; }
+    set relativeMaxDifference(newVal) {
+        this._relativeMaxDifference = newVal;
+        this._maxDifference = (this._upperBound - this.lowerBound) * newVal;
+        this._setRelativeMaxDifferenceChangeCallbacks.forEach((fun) => {
+            fun.apply(window, [newVal]);
+        });
+        this.updatePositions();
+    }
+    setRelativeMaxDifference(newVal) {
+        this._relativeMaxDifference = newVal;
+        this._maxDifference = (this._upperBound - this.lowerBound) * newVal;
         this.updatePositions();
     }
     
@@ -235,21 +271,24 @@ export default class DualRange {
                 var val = this.getMouseValue(event);
                 if(val < 0) {
                     this.relativeLower = 0;
-                } else if(val >= 0 && val <= this._relativeUpper - this._relativeDifference) {
-                    this.relativeLower = val;
-                } else {
-                    if(val <= 1 - this._relativeDifference) {
-                        this.relativeLower = val;
-                        this.relativeUpper = val + this._relativeDifference;
-                    } else {
-                        this.relativeLower = this._relativeUpper - this._relativeDifference;
-                    }
-                }
+                } else if(val > this._relativeUpper - this._relativeMinDifference) {
+					if(val <= 1 - this.relativeMinDifference) {
+						this.relativeLower = val;
+						this.relativeUpper = val + this._relativeMinDifference;
+					} else {
+						this._relativeLower = this._relativeUpper - this._relativeMinDifference;
+					}
+				} else if(val < this._relativeUpper - this._relativeMaxDifference) {
+					this.relativeLower = val;
+					this.relativeUpper = val + this._relativeMaxDifference;
+				} else {
+					this.relativeLower = val;
+				}
             }
             if(this._rangeMouseDown) {
                 var val = this.getMouseValue(event);
                 var d = val - this._latestMouseActiveValue;
-                this._latestMouseActiveValue = val;
+				this._latestMouseActiveValue = val;
                 if(this._relativeLower + d < 0) {
                     this.relativeUpper = this._relativeUpper - this._relativeLower;
                     this.relativeLower = 0;
@@ -262,19 +301,22 @@ export default class DualRange {
                 }
             }
             if(this._lastMouseDown) {
-                var val = this.getMouseValue(event);
-                if(val < this._relativeLower + this._relativeDifference) {
-                    if(val >= this._relativeDifference) {
-                        this.relativeUpper = val;
-                        this.relativeLower = val - this._relativeDifference;
-                    } else {
-                        this.relativeUpper = this._relativeLower + this._relativeDifference;
-                    }
-                } else if(val >= this._relativeLower + this._relativeDifference && val <= 1) {
-                    this.relativeUpper = val;
-                } else {
-                    this.relativeUpper = 1;
-                }
+				var val = this.getMouseValue(event);
+				if(val > 1) {
+					this.relativeUpper = 1;
+				} else if(val < this._relativeLower + this._relativeMinDifference) {
+					if(val >= this._relativeMinDifference) {
+						this.relativeUpper = val;
+						this.relativeLower = val - this._relativeMinDifference;
+					} else {
+						this.relativeUpper = this._relativeLower + this._relativeMinDifference;
+					}
+				} else if(val > this._relativeLower + this._relativeMaxDifference) {
+					this.relativeUpper = val;
+					this.relativeLower = val - this._relativeMaxDifference;
+				} else {
+					this.relativeUpper = val;
+				}
             }
         };
         window.addEventListener('mousemove', windowMouseMoveCallback);
@@ -287,13 +329,19 @@ export default class DualRange {
             let expectedUpperRange = this._relativeUpper - (this._relativeUpper - val) * d;
             if(expectedLowerRange < 0) expectedLowerRange = 0;
             if(expectedUpperRange > 1) expectedUpperRange = 1;
-            if(expectedUpperRange - expectedLowerRange < this._relativeDifference) {
-                expectedLowerRange = expectedUpperRange - this._relativeDifference;
+            if(expectedUpperRange - expectedLowerRange < this._relativeMinDifference) {
+                expectedLowerRange = expectedUpperRange - this._relativeMinDifference;
                 if(expectedLowerRange < 0) {
                     expectedLowerRange = 0;
-                    expectedUpperRange = this._relativeDifference;
+                    expectedUpperRange = this._relativeMinDifference;
                 }
-            }
+            } else if(expectedUpperRange - expectedLowerRange > this._relativeMaxDifference) {
+				expectedUpperRange = expectedLowerRange + this._relativeMaxDifference;
+				if(expectedUpperRange > 1) {
+					expectedUpperRange = 1;
+					expectedLowerRange = 1 - this._relativeMaxDifference;
+				}
+			}
             this.relativeLower = expectedLowerRange;
             this.relativeUpper = expectedUpperRange;
         };
@@ -324,13 +372,17 @@ export default class DualRange {
     addLowerBoundChangeCallback(callback) { this._setLowerBoundCallbacks.push(callback); }
     addUpperBoundChangeCallback(callback) { this._setUpperBoundCallbacks.push(callback); }
     addMinDifferenceChangeCallback(callback) { this._setMinDifferenceChangeCallbacks.push(callback); }
-    addRelativeDifferenceChangeCallback(callback) { this._setRelativeDifferenceChangeCallbacks.push(callback); }
+    addMaxDifferenceChangeCallback(callback) { this._setMaxDifferenceChangeCallbacks.push(callback); }
+    addRelativeMinDifferenceChangeCallback(callback) { this._setRelativeMinDifferenceChangeCallbacks.push(callback); }
+    addRelativeMaxDifferenceChangeCallback(callback) { this._setRelativeMaxDifferenceChangeCallbacks.push(callback); }
     removeLowerRangeChangeCallback(callback) { let a = this._setLowerRangeCallbacks; let i = a.indexOf(callback); if (i !== -1) a.splice(i, 1); }
     removeUpperRangeChangeCallback(callback) { let a = this._setUpperRangeCallbacks; let i = a.indexOf(callback); if (i !== -1) a.splice(i, 1); }
     removeLowerBoundChangeCallback(callback) { let a = this._setLowerBoundCallbacks; let i = a.indexOf(callback); if (i !== -1) a.splice(i, 1); }
     removeUpperBoundChangeCallback(callback) { let a = this._setUpperBoundCallbacks; let i = a.indexOf(callback); if (i !== -1) a.splice(i, 1); }
     removeMinDifferenceChangeCallback(callback) { let a = this._setMinDifferenceChangeCallbacks; let i = a.indexOf(callback); if (i !== -1) a.splice(i, 1); }
-    removeRelativeDifferenceChangeCallback(callback) { let a = this._setRelativeDifferenceChangeCallbacks; let i = a.indexOf(callback); if (i !== -1) a.splice(i, 1); }
+    removeMaxDifferenceChangeCallback(callback) { let a = this._setMaxDifferenceChangeCallbacks; let i = a.indexOf(callback); if (i !== -1) a.splice(i, 1); }
+    removeRelativeMinDifferenceChangeCallback(callback) { let a = this._setRelativeMinDifferenceChangeCallbacks; let i = a.indexOf(callback); if (i !== -1) a.splice(i, 1); }
+    removeRelativeMaxDifferenceChangeCallback(callback) { let a = this._setRelativeMaxDifferenceChangeCallbacks; let i = a.indexOf(callback); if (i !== -1) a.splice(i, 1); }
 
     createInHrangeElements() {
         this.dualRangeElement.appendChild(this.backgroundDiv);

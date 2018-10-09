@@ -117,7 +117,9 @@ declare class DualRange {
     relativeLower: number;
     relativeUpper: number;
     minDifference: number;
-    relativeDifference: number;
+    relativeMinDifference: number;
+    maxDifference: number;
+    relativeMaxDifference: number;
     // These setting functions won't call the callbacks
     setLowerBound: (newVal: number) => void;
     setUpperBound: (newVal: number) => void;
@@ -126,20 +128,26 @@ declare class DualRange {
     setRelativeLower: (newVal: number) => void;
     setRelativeUpper: (newVal: number) => void;
     setMinDifference: (newVal: number) => void;
-    setRelativeDifference: (newVal: number) => void;
+    setRelativeMinDifference: (newVal: number) => void;
+    setMaxDifference: (newVal: number) => void;
+    setRelativeMaxDifference: (newVal: number) => void;
     htmlElement: HTMLElement;
     addLowerRangeChangeCallback: (callback: (newVal: number) => void) => void;
     addUpperRangeChangeCallback: (callback: (newVal: number) => void) => void;
     addLowerBoundChangeCallback: (callback: (newVal: number) => void) => void;
     addUpperBoundChangeCallback: (callback: (newVal: number) => void) => void;
     addMinDifferenceChangeCallback: (callback: (newVal: number) => void) => void;
-    addRelativeDifferenceChangeCallback: (callback: (newVal: number) => void) => void;
+    addRelativeMinDifferenceChangeCallback: (callback: (newVal: number) => void) => void;
+    addMaxDifferenceChangeCallback: (callback: (newVal: number) => void) => void;
+    addRelativeMaxDifferenceChangeCallback: (callback: (newVal: number) => void) => void;
     removeLowerRangeChangeCallback: (callback: (newVal: number) => void) => void;
     removeUpperRangeChangeCallback: (callback: (newVal: number) => void) => void;
     removeLowerBoundChangeCallback: (callback: (newVal: number) => void) => void;
     removeUpperBoundChangeCallback: (callback: (newVal: number) => void) => void;
     removeMinDifferenceChangeCallback: (callback: (newVal: number) => void) => void;
-    removeRelativeDifferenceChangeCallback: (callback: (newVal: number) => void) => void;
+    removeRelativeMinDifferenceChangeCallback: (callback: (newVal: number) => void) => void;
+    removeMaxDifferenceChangeCallback: (callback: (newVal: number) => void) => void;
+    removeRelativeMaxDifferenceChangeCallback: (callback: (newVal: number) => void) => void;
     updatePositions: () => void;
     static getObject: (id: string) => DualRange | null;
 }

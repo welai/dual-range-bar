@@ -11,5 +11,6 @@ export default {
     verticalClass       : 'dual-vertical',
     lowerBoundAtt       : 'lower-bound',
     upperBoundAtt       : 'upper-bound',
-    minDiffAtt          : 'min-difference'
+    minDiffAtt          : 'min-difference',
+    maxDiffAtt          : 'max-difference'
 }
