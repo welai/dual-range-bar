@@ -1,4 +1,4 @@
-// import GridCanvas from './DualRange';
+import DualHRange from './DualHRange';
 
 // (function checkWhenImported(): void {
 //   // Check if the script is running on a browser environment
@@ -8,3 +8,7 @@
 
 // (window as any).GridCanvas = GridCanvas;
 // export default GridCanvas;
+
+(window as any).DualHRange = DualHRange;
+
+export { DualHRange };

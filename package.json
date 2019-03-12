@@ -12,7 +12,7 @@
   ],
   "scripts": {
     "build": "webpack",
-    "test":  "webpack && webpack --config webpack.test.js"
+    "test": "webpack && webpack --config webpack.test.js"
   },
   "author": "Celestial Phineas",
   "license": "MIT",

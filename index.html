@@ -38,7 +38,7 @@ body {
   width: 60%;
   left: 20%;
 }
-#dvr {
+/* #dvr {
   width: 20px;
   position: absolute;
   right: 10%;
@@ -52,7 +52,7 @@ body {
   top: 100px;
   width: 320px;
   margin: auto;
-}
+} */
 a {
   font-style: italic;
   text-decoration: none;
@@ -64,26 +64,6 @@ a:hover {
 </style>
 </body>
 <script>
-var horizontalBar = dual.HRange.getObject('dhr');
-var verticalBar = dual.VRange.getObject('dvr');
-
-document.getElementById('x1').innerHTML = horizontalBar.lowerRange.toFixed(2);
-document.getElementById('x2').innerHTML = horizontalBar.upperRange.toFixed(2);
-document.getElementById('y1').innerHTML = horizontalBar.lowerRange.toFixed(2);
-document.getElementById('y2').innerHTML = horizontalBar.upperRange.toFixed(2);
-
-horizontalBar.addLowerRangeChangeCallback(function(val) {
-  document.getElementById('x1').innerHTML = val.toFixed(2);
-});
-horizontalBar.addUpperRangeChangeCallback(function(val) {
-  document.getElementById('x2').innerHTML = val.toFixed(2);
-});
-verticalBar.addLowerRangeChangeCallback(function(val) {
-  document.getElementById('y1').innerHTML = val.toFixed(2);
-});
-verticalBar.addUpperRangeChangeCallback(function(val) {
-  document.getElementById('y2').innerHTML = val.toFixed(2);
-});
-
+var dualHRange = new DualHRange('dhr');
 </script>
 </html>

@@ -116,8 +116,9 @@ export default class DualRange {
 
   /**
    * @constructor
+   * @param {string | HTMLDivElement} htmlElement The container element of the dual range bar
    */
-  private constructor(htmlElement: string | HTMLDivElement) {
+  protected constructor(htmlElement: string | HTMLDivElement) {
     if(htmlElement as string) {
       this.htmlElement = document.getElementById(htmlElement as string) as HTMLDivElement;
     } else {
@@ -130,6 +131,9 @@ export default class DualRange {
     // Set class for the container
 
     const sliderDivClass = 'dual-div';
+    // Initialize the background
+    this.backgroundDiv = document.createElement('div');
+    this.backgroundDiv.classList.add('dual-bg');
     // Initialize the sliders
     this.firstSliderDiv = document.createElement('div');
     this.firstSliderDiv.classList.add(sliderDivClass, 'dual-first');
@@ -138,6 +142,10 @@ export default class DualRange {
     this.lastSliderDiv = document.createElement('div');
     this.lastSliderDiv.classList.add(sliderDivClass, 'dual-last');
 
-
+    // Insert the DOMs
+    this.htmlElement.appendChild(this.firstSliderDiv);
+    this.htmlElement.appendChild(this.firstSliderDiv);
+    this.htmlElement.appendChild(this.rangeSliderDiv);
+    this.htmlElement.appendChild(this.lastSliderDiv);
   }
 }

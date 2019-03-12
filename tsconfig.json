@@ -6,13 +6,13 @@
         "strictNullChecks": true,
         "strictFunctionTypes": true,
         "target": "es5",
-        "types": [],
-        "typeRoots": [
-            "./dist"
-        ],
         "forceConsistentCasingInFileNames": true
     },
-    "files": [
-        "test/test.ts"
+    "include": [
+        "src/**/*"
+    ],
+    "exclude": [
+        "node_modules",
+        "**/*.spec.ts"
     ]
 }
