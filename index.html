@@ -8,12 +8,11 @@
   <script src="dist/dual-range-bar.min.js"></script>
 </head>
 <body>
-  <a href="https://github.com/celestialphineas/dual-range-bar"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"></a>
+  <!-- <a href="https://github.com/celestialphineas/dual-range-bar"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"></a> -->
   <h1 class="title">Dual-range-bar</h1>
   <div id="dhr1"></div>
   <div id="dhr2"></div>
   <div id="dhr3"></div>
-  <div id="dvr"></div>
   <div class="data">
     <p><b>Horizontal:</b> (<span id="x1"></span>, <span id="x2"></span>)</p>
     <p><b>Vertical:</b> (<span id="y1"></span>, <span id="y2"></span>)</p>
@@ -40,13 +39,20 @@ body {
   width: 60%;
   transform: translateX(30%);
 }
-/* #dvr {
-  width: 20px;
+#dhr2 {
+  width: 200px;
   position: absolute;
   right: 10%;
-  top: 150px;
+  top: 200px;
   bottom: 50px;
-} */
+}
+#dhr3 {
+  width: 200px;
+  position: fixed;
+  left: 10%;
+  top: 200px;
+  bottom: 50px;
+}
 .data {
   color: #1E88A8;
   position: relative;

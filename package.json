@@ -3,7 +3,7 @@
   "version": "0.2.0",
   "description": "A dual range slider/scrolling bar without dependency",
   "main": "dist/dual-range-bar.min.js",
-  "repository": "https://github.com/celestialphineas/dual-range-bar.git",
+  "repository": "https://github.com/welai/dual-range-bar.git",
   "keywords": [
     "range-slider",
     "range-picker",
@@ -17,20 +17,21 @@
   "author": "Celestial Phineas",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/celestialphineas/dual-range-bar/issues"
+    "url": "https://github.com/welai/dual-range-bar/issues"
   },
-  "homepage": "https://celestialphineas.github.io/dual-range-bar",
+  "homepage": "https://welai.github.io/dual-range-bar",
   "devDependencies": {
-    "@babel/core": "^7.0.0",
-    "@babel/preset-env": "^7.0.0",
-    "babel-loader": "^8.0.0",
-    "css-loader": "^1.0.0",
+    "@babel/core": "^7.12.9",
+    "@babel/preset-env": "^7.12.7",
+    "babel-loader": "^8.2.2",
+    "css-loader": "^1.0.1",
+    "resize-observer-polyfill": "^1.5.1",
     "style-loader": "^0.22.1",
-    "ts-loader": "^5.2.1",
-    "typescript": "^3.0.3",
-    "uglifyjs-webpack-plugin": "^2.0.1",
-    "webpack": "^4.17.1",
-    "webpack-cli": "^3.1.0"
+    "ts-loader": "^5.4.5",
+    "typescript": "^3.9.7",
+    "uglifyjs-webpack-plugin": "^2.2.0",
+    "webpack": "^4.44.2",
+    "webpack-cli": "^3.3.12"
   },
   "typings": "./dist/dual-range-bar.d.ts"
 }
