@@ -4,7 +4,13 @@ import './style.css'
 import { setStyle } from './utils'
 import ResizeObserver from 'resize-observer-polyfill'
 
-export default abstract class DualRange implements EventTarget {
+export type Config = {
+  /** Minimizes the container when inactive */
+  minimizes?: boolean
+  // TODO: configurations of initial values, sizes and colors
+}
+
+export default abstract class DualRangeBar implements EventTarget {
   /** Container element */
   container: HTMLDivElement
   /** Constructed elements */
@@ -19,6 +25,13 @@ export default abstract class DualRange implements EventTarget {
     rangeSlider:  document.createElement('div')
   }
 
+  emitEvent() {
+    const event = new CustomEvent('update', {
+      detail: this
+    })
+    this.container.dispatchEvent(event)
+  }
+
   /** A unique prefix for everything in dual-range-bar */
   readonly prefix = 'drbar'
   /** An helper function for generating a unique ID */
@@ -28,18 +41,24 @@ export default abstract class DualRange implements EventTarget {
 
   /** Update element locations */
   abstract update(): void
+  /** The slider that is under dragging */
+  protected underDragging: 'start' | 'end' | 'range' | null = null
   /** This function is called when the starting slider is under dragging.
    * It should handle the updating of relative values.
    * `update` function does not need to be manually called */
-  abstract draggingStart(event: MouseEvent): void
+  protected abstract draggingStart(event: MouseEvent): void
   /** This function is called when the ending slider is under dragging
+   * It should handle the updating of relative values.
    * `update` function does not need to be manually called */
-  abstract draggingEnd(event: MouseEvent): void
-  /** This function is called when the range slider is under dragging
+  protected abstract draggingEnd(event: MouseEvent): void
+   /** This function is called when the range slider is under dragging
+   * It should handle the updating of relative values.
    * `update` function does not need to be manually called */
-  abstract draggingRange(event: MouseEvent): void
-  /** The slider that is under dragging */
-  protected underDragging: 'start' | 'end' | 'range' | null = null
+  protected abstract draggingRange(event: MouseEvent): void
+  /** Wheel behavior on the range slider */
+  protected abstract wheelScaling(event: WheelEvent): void
+  /** Wheel behavior on the background */
+  protected abstract wheelScrolling(event: WheelEvent): void
 
   /** Relative values are used for calculating layout,
    * this should range from 0 to 1. */
@@ -49,7 +68,9 @@ export default abstract class DualRange implements EventTarget {
     /** Corresponding value of the ending slider */
     upper: 1,
     /** Minimum span of the range slider, in ratio to 1 */
-    minSpan: 0.1
+    minSpan: 0.2,
+    /** Maximum span of the range slider, in ratio to 1 */
+    maxSpan: 1,
   }
 
   //#region Absolute preperties
@@ -86,12 +107,24 @@ export default abstract class DualRange implements EventTarget {
     this.relative.minSpan = relativeSpan
     this.update()
   }
+  /** Absolute maximum range span */
+  get maxSpan() { return this.relative.maxSpan * this.boundSpan }
+  set maxSpan(newVal) {
+    if (this.boundSpan === 0)
+      throw Error('"lowerBound" should not equal to "upperBound"')
+    const relativeSpan = newVal / this.boundSpan
+    if (relativeSpan > 1 || relativeSpan < 0)
+      throw Error('Invalid "maxSpan" specification')
+    this.relative.maxSpan = relativeSpan
+    this.update()
+  }
   //#endregion
 
   /** Dual range bar contructor
    * @constructor
    * @param {string | HTMLDivElement} container The container element of the dual range bar */
-  protected constructor(container: string | HTMLDivElement) {
+  protected constructor(container: string | HTMLDivElement, config?: Config) {
+    //#region Initializing the container
     if (typeof(container) === 'string')
       this.container = document.getElementById(container) as HTMLDivElement
     else this.container = container
@@ -103,7 +136,9 @@ export default abstract class DualRange implements EventTarget {
     ((x: string) => { if (!this.container.classList.contains(x)) {
       this.container.classList.add(x)
     }})(`${this.prefix}-container`)
+    //#endregion
 
+    //#region DOM element initializing
     // Set class for the div elements
     this.doms.background.classList.add(`${this.prefix}-bg`)
     this.doms.startSlider.classList.add(`${this.prefix}-slider`, `${this.prefix}-start`)
@@ -115,8 +150,9 @@ export default abstract class DualRange implements EventTarget {
     this.doms.background.appendChild(this.doms.rangeSlider)
     this.doms.background.appendChild(this.doms.startSlider)
     this.doms.background.appendChild(this.doms.endSlider)
+    //#endregion
 
-    // Inline styles of the DOM elements
+    //#region Inline styles of the DOM elements
     setStyle(this.container, {
       display: 'flex', overflow: 'visible', 
       alignItems: 'center', justifyContent: 'center'
@@ -128,7 +164,14 @@ export default abstract class DualRange implements EventTarget {
     setStyle(this.doms.startSlider, elementStyle)
     setStyle(this.doms.endSlider, elementStyle)
     setStyle(this.doms.rangeSlider, elementStyle)
+    //#endregion
 
+    //#region Handling configuration
+    if (config?.minimizes)
+      this.container.classList.add(`${this.prefix}-minimizes`)
+    //#endregion
+
+    //#region Handling events
     // Update bar when the container resizes
     const resizeObserver = new ResizeObserver(() => {
       this.update()
@@ -142,6 +185,7 @@ export default abstract class DualRange implements EventTarget {
     this.doms.rangeSlider.addEventListener('mousedown', () => {
       this.underDragging = 'range' })
     window.addEventListener('mousemove', (e) => {
+      e.preventDefault()
       switch (this.underDragging) {
         case null: return
         case 'start': this.draggingStart(e); break
@@ -149,20 +193,40 @@ export default abstract class DualRange implements EventTarget {
         case 'range': this.draggingRange(e); break
       }
       this.update()
+      this.emitEvent()
     })
     window.addEventListener('mouseup', () => {
       if (this.underDragging === null) return
-      this.underDragging = null; this.update(); return
+      this.underDragging = null
+      this.update()
+      this.emitEvent()
     })
+    // Wheel behaviour
+    this.doms.rangeSlider.addEventListener('wheel', (e) => {
+      e.preventDefault()
+      e.stopPropagation()
+      this.wheelScaling(e)
+      this.update()
+      this.emitEvent()
+    })
+    this.doms.background.addEventListener('wheel', (e) => {
+      e.preventDefault()
+      e.stopPropagation()
+      this.wheelScrolling(e)
+      this.update()
+      this.emitEvent()
+    })
+    //#endregion
   }
 
-  addEventListener(type: string, listener: EventListener | EventListenerObject | null, options?: boolean | AddEventListenerOptions): void {
-    throw new Error("Method not implemented.")
+  // Implementing the EventTarget interface
+  addEventListener(type: string, listener: EventListener | EventListenerObject | null, options?: boolean | AddEventListenerOptions) {
+    this.container.addEventListener(type as any, listener as any, options)
   }
   dispatchEvent(event: Event): boolean {
-    throw new Error("Method not implemented.")
+    return this.container.dispatchEvent(event)
   }
-  removeEventListener(type: string, callback: EventListener | EventListenerObject | null, options?: boolean | EventListenerOptions): void {
-    throw new Error("Method not implemented.")
+  removeEventListener(type: string, callback: EventListener | EventListenerObject | null, options?: boolean | EventListenerOptions) {
+    this.container.removeEventListener(type as any, callback as any, options)
   }
 }

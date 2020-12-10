@@ -1,14 +1,21 @@
-import DualHRange from './DualHRange';
+import DualHRangeBar from './DualHRangeBar'
+import DualVRangeBar from './DualVRangeBar'
 
-// (function checkWhenImported(): void {
-//   // Check if the script is running on a browser environment
-//   if (typeof window === 'undefined')
-//     throw Error('Grid canvas only works on a browser.\nPlease check out if your configuration is correct.');
-// })();
+window.addEventListener('load', () => {
+  let dualRangeBars = document.getElementsByClassName('drbar-container')
+  for (let i = 0; i < dualRangeBars.length; i++) {
+    const bar = dualRangeBars.item(i)
+    if (bar?.nodeName !== 'DIV') continue
+    if (bar?.childElementCount > 0) continue
+    if (bar?.classList.contains('drbar-vertical')) {
+      new DualVRangeBar(bar as HTMLDivElement)
+    } else {
+      new DualHRangeBar(bar as HTMLDivElement)
+    }
+  }
+});
 
-// (window as any).GridCanvas = GridCanvas;
-// export default GridCanvas;
+(window as any).DualHRange = DualHRangeBar;
+(window as any).DualVRange = DualVRangeBar;
 
-(window as any).DualHRange = DualHRange;
-
-export { DualHRange };
+export { DualHRangeBar, DualVRangeBar };

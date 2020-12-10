@@ -12,7 +12,7 @@
   <h1 class="title">Dual-range-bar</h1>
   <div id="dhr1"></div>
   <div id="dhr2"></div>
-  <div id="dhr3"></div>
+  <div id="dvr3"></div>
   <div class="data">
     <p><b>Horizontal:</b> (<span id="x1"></span>, <span id="x2"></span>)</p>
     <p><b>Vertical:</b> (<span id="y1"></span>, <span id="y2"></span>)</p>
@@ -46,7 +46,7 @@ body {
   top: 200px;
   bottom: 50px;
 }
-#dhr3 {
+#dvr3 {
   width: 200px;
   position: fixed;
   left: 10%;
@@ -73,7 +73,7 @@ a:hover {
 </body>
 <script>
 var dualHRangeRelative = new DualHRange('dhr1');
-var dualHRangeAbsolute = new DualHRange('dhr2');
-var dualHRangeFixed = new DualHRange('dhr3');
+var dualHRangeAbsolute = new DualHRange('dhr2', { minimizes: true });
+var dualVRangeFixed = new DualVRange('dvr3', { minimizes: true });
 </script>
 </html>
