@@ -6,8 +6,24 @@ import ResizeObserver from 'resize-observer-polyfill'
 
 export type Config = {
   /** Minimizes the container when inactive */
-  minimizes?: boolean
+  minimizes?: boolean,
+  /** Size of the dual range bar */
+  size?: 'small' | 'default' | 'large' | 'huge',
   // TODO: configurations of initial values, sizes and colors
+  /** Minimum possible value of the ranges, 
+   * value that the left-most stands for. 0 by default. */
+  lowerBound?: number,
+  /** Maximum possible value of the ranges,
+   * value that the right-most stands for. 1 by default. */
+  upperBound?: number,
+  /** Minimum span of possible ranges. 0.2 by default. */
+  minSpan?: number,
+  /** Maximum span of possible ranges. 1 by default. */
+  maxSpan?: number,
+  /** Current lower value of the range. */
+  lower?: number,
+  /** Current upper value of the range. */
+  upper?: number,
 }
 
 export default abstract class DualRangeBar implements EventTarget {
@@ -101,9 +117,8 @@ export default abstract class DualRangeBar implements EventTarget {
   set minSpan(newVal) {
     if (this.boundSpan === 0)
       throw Error('"lowerBound" should not equal to "upperBound"')
-    const relativeSpan = newVal / this.boundSpan
-    if (relativeSpan > 1 || relativeSpan < 0)
-      throw Error('Invalid "minSpan" specification')
+    const relativeSpan = Math.abs(newVal / this.boundSpan)
+    if (relativeSpan > 1) throw Error('Invalid "minSpan" specification')
     this.relative.minSpan = relativeSpan
     this.update()
   }
@@ -112,9 +127,8 @@ export default abstract class DualRangeBar implements EventTarget {
   set maxSpan(newVal) {
     if (this.boundSpan === 0)
       throw Error('"lowerBound" should not equal to "upperBound"')
-    const relativeSpan = newVal / this.boundSpan
-    if (relativeSpan > 1 || relativeSpan < 0)
-      throw Error('Invalid "maxSpan" specification')
+    const relativeSpan = Math.abs(newVal / this.boundSpan)
+    if (relativeSpan > 1) throw Error('Invalid "maxSpan" specification')
     this.relative.maxSpan = relativeSpan
     this.update()
   }
@@ -169,6 +183,20 @@ export default abstract class DualRangeBar implements EventTarget {
     //#region Handling configuration
     if (config?.minimizes)
       this.container.classList.add(`${this.prefix}-minimizes`)
+    // Size configuration
+    if (config?.size) {
+      this.container.classList.remove(`${this.prefix}-small`, 
+        `${this.prefix}-large`, `${this.prefix}-huge`)
+      if (config.size !== 'default')
+        this.container.classList.add(`${this.prefix}-${config.size}`)
+    }
+    // Values in the config
+    this.lowerBound = config?.lowerBound || this.lowerBound
+    this.upperBound = config?.upperBound || this.upperBound
+    this.minSpan = config?.minSpan || this.minSpan
+    this.maxSpan = config?.maxSpan || this.maxSpan
+    this.lower = config?.lower || this.lower
+    this.upper = config?.upper || this.upper
     //#endregion
 
     //#region Handling events
