@@ -1,4 +1,4 @@
-/** Fask set styles for a HTML element, tricky AnyScript */
+/** Fast set styles for a HTML element, tricky AnyScript */
 export function setStyle(htmlElement: HTMLElement, styleSpec: Partial<CSSStyleDeclaration>) {
   (<any>Object).assign(htmlElement.style, styleSpec)
 }

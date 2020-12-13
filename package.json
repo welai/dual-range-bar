@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "A dual range slider/scrolling bar without dependency",
   "main": "dist/dual-range-bar.min.js",
-  "types": "src/index.ts",
+  "files": [ "/dist", "/types" ],
+  "types": "types/index.d.ts",
   "repository": "https://github.com/welai/dual-range-bar.git",
   "keywords": [
     "range-slider",
@@ -25,7 +26,6 @@
     "@babel/preset-env": "^7.12.10",
     "babel-loader": "^8.2.2",
     "css-loader": "^5.0.1",
-    "dts-bundle": "^0.7.3",
     "resize-observer-polyfill": "^1.5.1",
     "style-loader": "^2.0.0",
     "terser-webpack-plugin": "^5.0.3",

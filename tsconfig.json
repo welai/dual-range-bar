@@ -1,11 +1,11 @@
 {
     "compilerOptions": {
-        // "declaration": true,
+        "declaration": true,
         "lib": [ "ES2015", "DOM" ],
         "module": "commonjs",
         "noImplicitAny": true,
         "noImplicitThis": true,
-        "outDir": "dist",
+        "outDir": "types",
         "sourceMap": true,
         "strictNullChecks": true,
         "strictFunctionTypes": true,
