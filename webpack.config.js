@@ -1,4 +1,5 @@
 const path = require('path');
+const TerserPlugin = require('terser-webpack-plugin');
 
 function generateConfig(name) {
   var uglify = name.indexOf('min') > -1;
@@ -10,7 +11,8 @@ function generateConfig(name) {
       filename: name + '.js',
       sourceMapFilename: name + '.map',
       library: 'dual-range-bar',
-      libraryTarget: 'umd'
+      libraryTarget: 'umd',
+      umdNamedDefine: true
     },
     resolve: {
       extensions: ['.tsx', '.ts', '.js']
@@ -42,9 +44,10 @@ function generateConfig(name) {
       ]
     }
   };
-  config.optimization = {};
   if(uglify) {
-    config.optimization.minimize = true;
+    config.optimization = {
+      minimize: true, minimizer: [ new TerserPlugin() ]
+    }
     config.mode = 'production';
   }
   return config;

@@ -4,6 +4,7 @@ import { Config } from './DualRangeBar'
 
 export default class DualHRangeBar extends DualRangeBar {
   update() {
+    super.update()
     const barW = this.doms.background.clientWidth
     const barH = this.doms.background.clientHeight
     const startSliderW = this.doms.startSlider.clientWidth

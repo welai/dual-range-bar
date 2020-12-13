@@ -1,8 +1,12 @@
 {
     "compilerOptions": {
+        // "declaration": true,
+        "lib": [ "ES2015", "DOM" ],
         "module": "commonjs",
         "noImplicitAny": true,
         "noImplicitThis": true,
+        "outDir": "dist",
+        "sourceMap": true,
         "strictNullChecks": true,
         "strictFunctionTypes": true,
         "target": "es5",

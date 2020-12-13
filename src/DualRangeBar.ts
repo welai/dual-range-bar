@@ -9,7 +9,6 @@ export type Config = {
   minimizes?: boolean,
   /** Size of the dual range bar */
   size?: 'small' | 'default' | 'large' | 'huge',
-  // TODO: configurations of initial values, sizes and colors
   /** Minimum possible value of the ranges, 
    * value that the left-most stands for. 0 by default. */
   lowerBound?: number,
@@ -24,6 +23,16 @@ export type Config = {
   lower?: number,
   /** Current upper value of the range. */
   upper?: number,
+  /** Color of the sliders */
+  sliderColor?: string,
+  /** Color of active sliders */
+  sliderActiveColor?: string,
+  /** Color of the range slider */
+  rangeColor?: string,
+  /** Color of active range slider */
+  rangeActiveColor?: string,
+  /** Color of the background */
+  bgColor?: string
 }
 
 export default abstract class DualRangeBar implements EventTarget {
@@ -56,7 +65,15 @@ export default abstract class DualRangeBar implements EventTarget {
   }
 
   /** Update element locations */
-  abstract update(): void
+  update() {
+    // Update data attributes
+    this.container.dataset.lowerBound = this.lowerBound.toString()
+    this.container.dataset.upperBound = this.upperBound.toString()
+    this.container.dataset.minSpan = this.minSpan.toString()
+    this.container.dataset.maxSpan = this.maxSpan.toString()
+    this.container.dataset.lower = this.lower.toString()
+    this.container.dataset.upper = this.upper.toString()
+  }
   /** The slider that is under dragging */
   protected underDragging: 'start' | 'end' | 'range' | null = null
   /** This function is called when the starting slider is under dragging.
@@ -97,19 +114,25 @@ export default abstract class DualRangeBar implements EventTarget {
   /** Difference of the upper bound and the lower bound */
   get boundSpan() { return this.upperBound - this.lowerBound }
   /** Absolute lower range */
-  get lower() { return this.relative.lower * this.boundSpan }
+  get lower() { return this.relative.lower * this.boundSpan + this.lowerBound }
   set lower(newVal) {
     if (this.boundSpan === 0)
       throw Error('"lowerBound" should not equal to "upperBound"')
-    this.relative.lower = newVal / this.boundSpan
+    const relativeLower = (newVal - this.lowerBound) / this.boundSpan
+    if (relativeLower < 0 || relativeLower > 1)
+      throw Error('"lower" value out of bound')
+    this.relative.lower = relativeLower
     this.update()
   }
   /** Absolute upper range */
-  get upper() { return this.relative.upper * this.boundSpan }
+  get upper() { return this.relative.upper * this.boundSpan + this.lowerBound }
   set upper(newVal) {
     if (this.boundSpan === 0)
       throw Error('"lowerBound" should not equal to "upperBound"')
-    this.relative.upper = newVal / this.boundSpan
+    const relativeUpper = (newVal - this.lowerBound) / this.boundSpan
+    if (relativeUpper < 0 || relativeUpper > 1)
+      throw Error('"upper" value out of bound')
+    this.relative.upper = relativeUpper
     this.update()
   }
   /** Absolute minimum range span */
@@ -190,13 +213,46 @@ export default abstract class DualRangeBar implements EventTarget {
       if (config.size !== 'default')
         this.container.classList.add(`${this.prefix}-${config.size}`)
     }
+    // Declarative data attributes
+    if (this.container.dataset.lowerBound !== undefined)
+      this.lowerBound = parseFloat(this.container.dataset.lowerBound)
+    if (this.container.dataset.upperBound !== undefined)
+      this.upperBound = parseFloat(this.container.dataset.upperBound)
+    if (this.container.dataset.minSpan !== undefined)
+      this.minSpan = parseFloat(this.container.dataset.minSpan)
+    if (this.container.dataset.maxSpan !== undefined)
+      this.maxSpan = parseFloat(this.container.dataset.maxSpan)
+    if (this.container.dataset.lower !== undefined)
+      this.lower = parseFloat(this.container.dataset.lower)
+    if (this.container.dataset.upper !== undefined)
+      this.upper = parseFloat(this.container.dataset.upper)
     // Values in the config
-    this.lowerBound = config?.lowerBound || this.lowerBound
-    this.upperBound = config?.upperBound || this.upperBound
-    this.minSpan = config?.minSpan || this.minSpan
-    this.maxSpan = config?.maxSpan || this.maxSpan
-    this.lower = config?.lower || this.lower
-    this.upper = config?.upper || this.upper
+    if (config?.lowerBound !== undefined) this.lowerBound = config.lowerBound
+    if (config?.upperBound !== undefined) this.upperBound = config.upperBound
+    if (config?.minSpan !== undefined) this.minSpan = config.minSpan
+    if (config?.maxSpan !== undefined) this.maxSpan = config.maxSpan
+    if (config?.lower !== undefined) this.lower = config.lower
+    if (config?.upper !== undefined) this.upper = config.upper
+    // Handling color config
+    const colorConfig: { [ key: string ]: string } = {}
+    if (config?.sliderColor)
+      colorConfig['--slider-color'] = config.sliderColor
+    if (config?.sliderActiveColor)
+      colorConfig['--slider-active'] = config.sliderActiveColor
+    if (config?.rangeColor)
+      colorConfig['--range-color'] = config.rangeColor
+    if (config?.rangeActiveColor)
+      colorConfig['--range-active'] = config.rangeActiveColor
+    if (config?.bgColor)
+      colorConfig['--bg-color'] = config.bgColor
+    if (Object.keys(colorConfig).length > 0) {
+      let cssString = `#${this.container.id}{`
+      for (const key in colorConfig) cssString += `${key}:${colorConfig[key]};`
+      cssString += '}'
+      const sheet = document.createElement('style')
+      sheet.innerText = cssString
+      document.head.appendChild(sheet)
+    }
     //#endregion
 
     //#region Handling events

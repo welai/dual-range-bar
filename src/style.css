@@ -61,8 +61,7 @@
   transition: transform 100ms;
 }
 .drbar-container.drbar-minimizes:not(:hover) .drbar-slider {
-  transform: scale(0.25);
-  opacity: 0;
+  transform: scale(0.25); opacity: 0;
 }
 
 /* Range bar rules */
@@ -86,12 +85,10 @@
   background-color: var(--range-active);
 }
 .drbar-container.drbar-horizontal.drbar-minimizes:not(:hover) .drbar-range {
-  transform: scaleY(var(--mini-ratio));
-  opacity: 0.5;
+  transform: scaleY(var(--mini-ratio)); opacity: 0.5;
 }
 .drbar-container.drbar-vertical.drbar-minimizes:not(:hover) .drbar-range {
-  transform: scaleX(var(--mini-ratio));
-  opacity: 0.5;
+  transform: scaleX(var(--mini-ratio)); opacity: 0.5;
 }
 
 /* Background rules */

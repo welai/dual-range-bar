@@ -1,18 +1,18 @@
 # Dual range bar
 
-A minimal scrolling bar/slider with two sliders that can be used for range scrolling/selection.
+A minimal scrolling bar with two sliders that can be used for range scrolling/selection.
 
-Demo: https://celestialphineas.github.io/dual-range-bar
+Demo: https://welai.github.io/dual-range-bar
 
 ## Features
 
-Dual range bar is something alike the timeline control in Adobe Audition/Premiere. It allows you to control a range variable with dragging operations on sliders and mouse wheel scrolling.
+Dual range bar is something alike the timeline control in Adobe Audition/Premiere. It allows you to control a range variable with dragging operations on sliders and mouse wheel scrolling. The primary design purpose is an alternative scrollbar rather than a value input, though it can be used in both scenarios.
 
-It does not need any dependencies, and can work by simply using the `script` tag in your web page, while at the same time it fits for modern web development paradigm, providing modules (UMD) and a TypeScript declaration.
+Dual range bar does not need any dependencies, and can work well by simply referring the script with a `script` tag in your web page, while at the same time it fits for modern web development paradigm, providing modules (UMD) and developed with TypeScript.
 
-## Using Dual
+## Installing
 
-### With the `script` tag only 
+### The old `<script/>` tag manner
 
 You may have a quick look at the source of the demo page: [index.html](index.html)
 
@@ -24,10 +24,16 @@ Import dual with a script declaration:
 <script src="dist/dual-range-bar.min.js"></script>
 ```
 
+### Using modules
+
+```
+$ npm install dual-range-bar
+```
+
 You will have a new horizontal dual range bar by simply:
 
 ```html
-<div class="dual-hrange"></div>
+<div class="drbar-container drbar-horizontal"></div>
 ```
 
 A new horizontal range bar will be created right inside the div box.
@@ -35,7 +41,7 @@ A new horizontal range bar will be created right inside the div box.
 Similarly, for a vertical dual range bar:
 
 ```html
-<div class="dual-vrange"></div>
+<div class="drbar-container drbar-vertical"></div>
 ```
 
 It's also possible to do this via scripting:
@@ -105,53 +111,6 @@ See [test/test.ts](test/test.ts) for a detailed example.
 
 You may not need to use the HTML attributes any more. Import the module and use JavaScript for everything.
 
-### API
-
-```typescript
-declare class DualRange {
-    constructor(element: HTMLElement | string);
-    lowerBound: number;
-    upperBound: number;
-    lowerRange: number;
-    upperRange: number;
-    relativeLower: number;
-    relativeUpper: number;
-    minDifference: number;
-    relativeMinDifference: number;
-    maxDifference: number;
-    relativeMaxDifference: number;
-    // These setting functions won't call the callbacks
-    setLowerBound: (newVal: number) => void;
-    setUpperBound: (newVal: number) => void;
-    setLowerRange: (newVal: number) => void;
-    setUpperRange: (newVal: number) => void;
-    setRelativeLower: (newVal: number) => void;
-    setRelativeUpper: (newVal: number) => void;
-    setMinDifference: (newVal: number) => void;
-    setRelativeMinDifference: (newVal: number) => void;
-    setMaxDifference: (newVal: number) => void;
-    setRelativeMaxDifference: (newVal: number) => void;
-    htmlElement: HTMLElement;
-    addLowerRangeChangeCallback: (callback: (newVal: number) => void) => void;
-    addUpperRangeChangeCallback: (callback: (newVal: number) => void) => void;
-    addLowerBoundChangeCallback: (callback: (newVal: number) => void) => void;
-    addUpperBoundChangeCallback: (callback: (newVal: number) => void) => void;
-    addMinDifferenceChangeCallback: (callback: (newVal: number) => void) => void;
-    addRelativeMinDifferenceChangeCallback: (callback: (newVal: number) => void) => void;
-    addMaxDifferenceChangeCallback: (callback: (newVal: number) => void) => void;
-    addRelativeMaxDifferenceChangeCallback: (callback: (newVal: number) => void) => void;
-    removeLowerRangeChangeCallback: (callback: (newVal: number) => void) => void;
-    removeUpperRangeChangeCallback: (callback: (newVal: number) => void) => void;
-    removeLowerBoundChangeCallback: (callback: (newVal: number) => void) => void;
-    removeUpperBoundChangeCallback: (callback: (newVal: number) => void) => void;
-    removeMinDifferenceChangeCallback: (callback: (newVal: number) => void) => void;
-    removeRelativeMinDifferenceChangeCallback: (callback: (newVal: number) => void) => void;
-    removeMaxDifferenceChangeCallback: (callback: (newVal: number) => void) => void;
-    removeRelativeMaxDifferenceChangeCallback: (callback: (newVal: number) => void) => void;
-    updatePositions: () => void;
-    static getObject: (id: string) => DualRange | null;
-}
-```
 
 ## Stylizing
 
@@ -160,10 +119,6 @@ See [src/default-style.css](src/default-style.css) and customize the styles in y
 ## Capability
 
 Any version of Internet Explorer is not supported. But it works fine on Edge and other modern browsers.
-
-## TODO
-
-* A method to remove a bar
 
 ## Contributions
 

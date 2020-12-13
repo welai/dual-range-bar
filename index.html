@@ -8,17 +8,16 @@
   <script src="dist/dual-range-bar.min.js"></script>
 </head>
 <body>
-  <!-- <a href="https://github.com/celestialphineas/dual-range-bar"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"></a> -->
+  <a href="https://github.com/celestialphineas/dual-range-bar"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"></a>
   <h1 class="title">Dual-range-bar</h1>
-  <div id="dhr1"></div>
-  <div id="dhr2"></div>
-  <div id="dvr3"></div>
+  <div id="dhr"></div>
+  <div id="dvr"></div>
   <div class="data">
     <p><b>Horizontal:</b> (<span id="x1"></span>, <span id="x2"></span>)</p>
     <p><b>Vertical:</b> (<span id="y1"></span>, <span id="y2"></span>)</p>
     <div style="text-align:left">
       <p>Slide the round sliders and the range slider to change the range.</p>
-      <p>Try scroll your mouse wheel on different components of the range bar.</p>
+      <p>Try to scroll your mouse wheel on different components of the range bar.</p>
       <p>For the full spec and usage, see <a href="https://github.com/celestialphineas/dual-range-bar">readme</a>.</p>
     </div>
   </div>
@@ -33,23 +32,16 @@ body {
   font-size: 48pt;
   line-height: 48pt;
 }
-#dhr1 {
+#dhr {
   position: relative;
   height: 20px;
   width: 60%;
   transform: translateX(30%);
 }
-#dhr2 {
+#dvr {
   width: 200px;
   position: absolute;
   right: 10%;
-  top: 200px;
-  bottom: 50px;
-}
-#dvr3 {
-  width: 200px;
-  position: fixed;
-  left: 10%;
   top: 200px;
   bottom: 50px;
 }
@@ -72,8 +64,21 @@ a:hover {
 </style>
 </body>
 <script>
-var dualHRangeRelative = new DualHRange('dhr1');
-var dualHRangeAbsolute = new DualHRange('dhr2', { minimizes: true });
-var dualVRangeFixed = new DualVRange('dvr3', { minimizes: true });
+var dhr = new DualHRange('dhr')
+var dvr = new DualVRange('dvr')
+
+dhr.addEventListener('update', (event) => {
+  document.getElementById('x1').innerText = event.detail.lower.toFixed(2);
+  document.getElementById('x2').innerText = event.detail.upper.toFixed(2);
+});
+dvr.addEventListener('update', (event) => {
+  document.getElementById('y1').innerText = event.detail.lower.toFixed(2);
+  document.getElementById('y2').innerText = event.detail.upper.toFixed(2);
+});
+
+document.getElementById('x1').innerText = dhr.lower.toFixed(2);
+document.getElementById('x2').innerText = dhr.upper.toFixed(2);
+document.getElementById('y1').innerText = dvr.lower.toFixed(2);
+document.getElementById('y2').innerText = dvr.upper.toFixed(2);
 </script>
 </html>
