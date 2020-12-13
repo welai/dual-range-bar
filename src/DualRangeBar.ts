@@ -79,15 +79,15 @@ export default abstract class DualRangeBar implements EventTarget {
   /** This function is called when the starting slider is under dragging.
    * It should handle the updating of relative values.
    * `update` function does not need to be manually called */
-  protected abstract draggingStart(event: MouseEvent): void
+  protected abstract draggingStart(event: MouseEvent | TouchEvent): void
   /** This function is called when the ending slider is under dragging
    * It should handle the updating of relative values.
    * `update` function does not need to be manually called */
-  protected abstract draggingEnd(event: MouseEvent): void
+  protected abstract draggingEnd(event: MouseEvent | TouchEvent): void
    /** This function is called when the range slider is under dragging
    * It should handle the updating of relative values.
    * `update` function does not need to be manually called */
-  protected abstract draggingRange(event: MouseEvent): void
+  protected abstract draggingRange(event: MouseEvent | TouchEvent): void
   /** Wheel behavior on the range slider */
   protected abstract wheelScaling(event: WheelEvent): void
   /** Wheel behavior on the background */
@@ -156,6 +156,76 @@ export default abstract class DualRangeBar implements EventTarget {
     this.update()
   }
   //#endregion
+
+  /** Saved touchstart clientX */ protected prevClientX = 0
+  /** Saved touchstart clientY */ protected prevClientY = 0
+  /** Handling events */
+  private handleEvents() {
+    // Update bar when the container resizes
+    const resizeObserver = new ResizeObserver(() => {
+      this.update()
+    })
+    resizeObserver.observe(this.container)
+    // `underDragging` status update
+    const saveClientXY = (e: TouchEvent) => {
+      this.prevClientX = e.touches.item(0)?.clientX || 0
+      this.prevClientY = e.touches.item(0)?.clientY || 0
+    }
+    this.doms.startSlider.addEventListener('mousedown', () => {
+      this.underDragging = 'start' })
+    this.doms.startSlider.addEventListener('touchstart', (e) => {
+      saveClientXY(e)
+      this.underDragging = 'start' })
+    this.doms.endSlider.addEventListener('mousedown', () => {
+      this.underDragging = 'end' })
+    this.doms.endSlider.addEventListener('touchstart', (e) => {
+      saveClientXY(e)
+      this.underDragging = 'end' })
+    this.doms.rangeSlider.addEventListener('mousedown', () => {
+      this.underDragging = 'range' })
+    this.doms.rangeSlider.addEventListener('touchstart', (e) => {
+      saveClientXY(e)
+      this.underDragging = 'range' })
+    // Moving pointer
+    const pointerMove = (e: MouseEvent | TouchEvent) => {
+      if(this.underDragging !== null) e.preventDefault()
+      switch (this.underDragging) {
+        case null: return
+        case 'start': this.draggingStart(e); break
+        case 'end': this.draggingEnd(e); break
+        case 'range': this.draggingRange(e); break
+      }
+      this.update()
+      this.emitEvent()
+    }
+    window.addEventListener('mousemove', pointerMove)
+    window.addEventListener('touchmove', pointerMove)
+    // Pointer up
+    const pointerUp = () => {
+      if (this.underDragging === null) return
+      this.underDragging = null
+      this.update()
+      this.emitEvent()
+    }
+    window.addEventListener('mouseup', pointerUp)
+    window.addEventListener('touchend', pointerUp)
+    window.addEventListener('touchcancel', pointerUp)
+    // Wheel behaviour
+    this.doms.rangeSlider.addEventListener('wheel', (e) => {
+      e.preventDefault()
+      e.stopPropagation()
+      this.wheelScaling(e)
+      this.update()
+      this.emitEvent()
+    })
+    this.doms.background.addEventListener('wheel', (e) => {
+      e.preventDefault()
+      e.stopPropagation()
+      this.wheelScrolling(e)
+      this.update()
+      this.emitEvent()
+    })
+  }
 
   /** Dual range bar contructor
    * @constructor
@@ -255,52 +325,7 @@ export default abstract class DualRangeBar implements EventTarget {
     }
     //#endregion
 
-    //#region Handling events
-    // Update bar when the container resizes
-    const resizeObserver = new ResizeObserver(() => {
-      this.update()
-    })
-    resizeObserver.observe(this.container)
-    // `underDragging` status update
-    this.doms.startSlider.addEventListener('mousedown', () => {
-      this.underDragging = 'start' })
-    this.doms.endSlider.addEventListener('mousedown', () => {
-      this.underDragging = 'end' })
-    this.doms.rangeSlider.addEventListener('mousedown', () => {
-      this.underDragging = 'range' })
-    window.addEventListener('mousemove', (e) => {
-      e.preventDefault()
-      switch (this.underDragging) {
-        case null: return
-        case 'start': this.draggingStart(e); break
-        case 'end': this.draggingEnd(e); break
-        case 'range': this.draggingRange(e); break
-      }
-      this.update()
-      this.emitEvent()
-    })
-    window.addEventListener('mouseup', () => {
-      if (this.underDragging === null) return
-      this.underDragging = null
-      this.update()
-      this.emitEvent()
-    })
-    // Wheel behaviour
-    this.doms.rangeSlider.addEventListener('wheel', (e) => {
-      e.preventDefault()
-      e.stopPropagation()
-      this.wheelScaling(e)
-      this.update()
-      this.emitEvent()
-    })
-    this.doms.background.addEventListener('wheel', (e) => {
-      e.preventDefault()
-      e.stopPropagation()
-      this.wheelScrolling(e)
-      this.update()
-      this.emitEvent()
-    })
-    //#endregion
+    this.handleEvents()
   }
 
   // Implementing the EventTarget interface

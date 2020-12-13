@@ -36,9 +36,11 @@ export default class DualVRangeBar extends DualRangeBar {
     return clientY - bgRect.top
   }
 
-  protected draggingStart(event: MouseEvent) {
+  protected draggingStart(event: MouseEvent | TouchEvent) {
+    const clientY = (event as MouseEvent).clientY
+    || (event as TouchEvent).touches?.item(0)?.clientY || 0
     const minLower = 0, maxLower = 1 - this.relative.minSpan
-    let newLower = this.getDy(event.clientY)/this.doms.background.clientHeight
+    let newLower = this.getDy(clientY)/this.doms.background.clientHeight
     if (newLower < minLower) newLower = minLower
     if (newLower > maxLower) newLower = maxLower
     this.relative.lower = newLower
@@ -48,9 +50,11 @@ export default class DualVRangeBar extends DualRangeBar {
       this.relative.upper = newLower + this.relative.maxSpan
   }
   
-  protected draggingEnd(event: MouseEvent) {
+  protected draggingEnd(event: MouseEvent | TouchEvent) {
+    const clientY = (event as MouseEvent).clientY
+    || (event as TouchEvent).touches?.item(0)?.clientY || 0
     const minUpper = this.relative.minSpan, maxUpper = 1
-    let newUpper = this.getDy(event.clientY)/this.doms.background.clientHeight
+    let newUpper = this.getDy(clientY)/this.doms.background.clientHeight
     if (newUpper < minUpper) newUpper = minUpper
     if (newUpper > maxUpper) newUpper = maxUpper
     this.relative.upper = newUpper
@@ -60,9 +64,11 @@ export default class DualVRangeBar extends DualRangeBar {
       this.relative.lower = newUpper - this.relative.maxSpan
   }
 
-  protected draggingRange(event: MouseEvent) {
+  protected draggingRange(event: MouseEvent | TouchEvent) {
+    const movementY = (event as MouseEvent).movementY
+    || (((event as TouchEvent).touches?.item(0)?.clientY || 0) - this.prevClientY)
     const maxDx = 1 - this.relative.upper, minDx = -this.relative.lower
-    let dx = event.movementY/this.doms.background.clientHeight
+    let dx = movementY/this.doms.background.clientHeight
     if (dx > maxDx) dx = maxDx; if (dx < minDx) dx = minDx
     this.relative.lower += dx; this.relative.upper += dx
   }

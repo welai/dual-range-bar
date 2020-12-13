@@ -6,9 +6,9 @@ Demo: https://welai.github.io/dual-range-bar
 
 ## Features
 
-Dual range bar is something alike the timeline control in Adobe Audition/Premiere. It allows you to control a range variable with dragging operations on sliders and mouse wheel scrolling. The primary design purpose is an alternative scrollbar rather than a value input, though it can be used in both scenarios.
+Dual range bar is something alike the timeline control in Adobe Audition/Premiere. It allows you to control a range variable via dragging operations on sliders and mouse wheel scrolling. The primary design purpose is an alternative scrollbar rather than a value input, though it can be used in both scenarios.
 
-Dual range bar does not need any dependencies, and can work well by simply referring the script with a `script` tag in your web page, while at the same time it fits for modern web development paradigm, providing modules (UMD) and developed with TypeScript.
+Dual range bar does not need any dependencies, and can work well by simply referring the script with a `<script/>` tag in your webpage, while at the same time it fits for modern web development paradigm, providing modules (UMD) and developed with TypeScript.
 
 ## Installing
 
@@ -16,13 +16,13 @@ Dual range bar does not need any dependencies, and can work well by simply refer
 
 You may have a quick look at the source of the demo page: [index.html](index.html)
 
-I will refer to the selected range part as "range" later, and the boundary of the selectable range is called "bound".
-
-Import dual with a script declaration:
+Import dual range bar with a script reference declaration:
 
 ```html
 <script src="dist/dual-range-bar.min.js"></script>
 ```
+
+The `src` path varies according to the location you make copy of the script.
 
 ### Using modules
 
@@ -30,98 +30,80 @@ Import dual with a script declaration:
 $ npm install dual-range-bar
 ```
 
-You will have a new horizontal dual range bar by simply:
+And in you JavaScript or TypeScript code:
 
-```html
-<div class="drbar-container drbar-horizontal"></div>
+```javascript
+import { DualHRangeBar, DualVRangeBar } from 'dual-range-bar'
 ```
 
-A new horizontal range bar will be created right inside the div box.
+## Usage
 
-Similarly, for a vertical dual range bar:
+### Declarative
+
+You can create new dual range bars in a fully-declarative manner, but you will have no access to the `DualRangeBar` instance in JavaScript, which is usually unwanted. Anyway, initializing dual range bar with class names just works, and data properties are still accessible via [data attributes](https://developer.mozilla.org/en-US/docs/Learn/HTML/Howto/Use_data_attributes) of the container element.
+
+```html
+<div class="drbar-container"></div>
+```
+
+This by default creates a horizontal dual range bar. Note that, initializations based on class names are executed only once, at `window.onload`, and only `<div/>`'s with no child nodes will be initialized. 
+
+To create a vertical dual range bar, adding a `drbar-vertical` class name to the container's class list.
 
 ```html
 <div class="drbar-container drbar-vertical"></div>
 ```
 
-It's also possible to do this via scripting:
+### Using script
 
 ```html
-<div id="horizontal-bar"></div>
-<script>
-var horizontalBar = dual.HRange.getObject('horizontal-bar');
-</script>
+<div id="my-drbar-container"></div>
 ```
 
-This will automatically create an object and return it. Using the constructor is not encouraged.
-
-If you want to use the property or call some methods of the dual range bar, you need some scripting:
-
-```html
-<div class="dual-hrange" id="dhr"></div>
-<style>
-#dhr {
-  position: relative;
-  height: 20px;
-  width: 60%;
-  left: 20%;
-}
-</style>
-<script>
-// Get the horizontal dual range bar object
-var horizontalBar = dual.HRange.getObject('dhr');
-
-// Get the lowerRange and upperRange of the current selection
-document.getElementById('x1').innerHTML = horizontalBar.lowerRange.toFixed(2);
-document.getElementById('x2').innerHTML = horizontalBar.upperRange.toFixed(2);
-
-// Add callback to the value change
-horizontalBar.addLowerRangeChangeCallback(function(val) {
-  document.getElementById('x1').innerHTML = val.toFixed(2);
-});
-horizontalBar.addUpperRangeChangeCallback(function(val) {
-  document.getElementById('x2').innerHTML = val.toFixed(2);
-});
-</script>
-```
-
-It is also possible to change the boundaries of the range bar. You can do the initialize with HTML or modify the value in JavaScript.
-
-```html
-<div class="dual-hrange" lower-bound="-2.5" upper-bound="1.2"></div>
-```
+And in your JavaScript/TypeScript:
 
 ```javascript
-horizontalBar.lowerBound = -2.5;
-horizontalBar.upperBound = 1.2;
+const drbar = new DualHRangeBar('my-drbar-container')
 ```
 
-You can not only get the values of current range, but setting them is also OK.
+Or, this will create a vertical dual range bar:
 
 ```javascript
-// This will print the lower range of current status
-console.log(horizontalBar.lowerRange);
-// This will change the upper range of current status
-horizontalBar.upperRange = 0.8;
+const drbar = new DualVRangeBar('my-drbar-container')
 ```
 
-### Using modules & TypeScript
+## Accessing data
 
-See [test/test.ts](test/test.ts) for a detailed example.
+Data interface of dual range bar is simple. 
 
-You may not need to use the HTML attributes any more. Import the module and use JavaScript for everything.
+```javascript
+console.log(drbar.lower, drbar.upper, drbar.lowerBound, drbar.upperBound)
+```
 
+`lower` property is the value represented by the left/top slider. `upper` property is the value represented by the right/bottom slider.
+
+`lowerBound` is the minimum possible value of the ranges, i.e. the leftmost/topmost value on the bar. `upperBound` is the maximum possible value of the ranges, i.e. the rightmost/bottommost value on the bar. A `lowerBound` that is larger than the `upperBound` is allowed.
+
+```javascript
+console.log(drbar.minSpan, drbar.maxSpan)
+```
+
+`minSpan` is the minimum range span, and `maxSpan` is the maximum range span. Dual range bar will try to prevent the sliders from representing a range smaller than the `minSpan` or larger than the `maxSpan`. Here, the "span" is always `upper - lower`.
+
+All of the properties mentioned above are mutable. But you have to ensure that you have made them correct, or unexpected behaviors may occur. Manual changes to the data properties does not emit any events.
+
+When you have no access to the `DualRangeBar` instance, values are also accessible via [data attributes](https://developer.mozilla.org/en-US/docs/Learn/HTML/Howto/Use_data_attributes) of the container element.
+
+```javascript
+console.log(parseFloat(document.getElementById('my-drbar-container').dataset.lowerBound))
+```
+
+## Configuring
+
+## Events
 
 ## Stylizing
 
-See [src/default-style.css](src/default-style.css) and customize the styles in your project.
+## Contributing
 
-## Capability
-
-Any version of Internet Explorer is not supported. But it works fine on Edge and other modern browsers.
-
-## Contributions
-
-Feel free to do anything with this stuff and raise any questions as an issue. The code base is messy, after all I write this to practice writing an NPM module myself.
-
-Pull requests are welcome.
+Pull requests are welcomed.
