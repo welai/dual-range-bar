@@ -100,9 +100,72 @@ console.log(parseFloat(document.getElementById('my-drbar-container').dataset.low
 
 ## Configuring
 
+Dual range bar provides multiple configuration options for specifying initial values and styling.
+
+```javascript
+const drbar = new DualHRangeBar('my-drbar-container', {
+  minimizes: false, // Minimises the container when inactive
+  size: 'default',  // Size of the dual range bar
+  lowerBound: 0,    // Initial value for "lowerBound"
+  upperBound: 1,    // Initial value for "upperBound"
+  minSpan: 0.2,     // Initial value for "minSpan"
+  maxSpan: 1,       // Initial value for "maxSpan"
+  lower: 0,         // Initial value for "lower"
+  upper: 1,         // Initial value for "upper"
+  sliderColor: '#1E88A8', // Color of the slider
+  sliderActive: '#08789b',// Slider color when active
+  rangeColor: '#7DB9DE',  // Color of the range slider
+  rangeActive: '#5da8d6', // Range slider color when active
+  bgColor: '#aaaaaa44',   // Color of the background
+})
+```
+
+When `minimizes` is `true`, the dual range bar will narrow to a thin line when the mouse pointer is out of the container.
+
+There are four available `size`'s for dual range bar, `small`, `default`, `large` and `huge`.
+
+Dual range bar does not validate the color specification strings, the strings will be written directly into the CSS. When the `sliderColor` and `rangeColor` are specified, `sliderActive` and `rangeActive` will NOT change accordingly, you may have to specify the two colors manually. If you need to generate the darkened colors programmatically, [chroma.js](https://gka.github.io/chroma.js/) is a good choice. 
+
 ## Events
 
-## Stylizing
+The event interface is quite straight-forward. When data is updated at user input, an `update` event is emitted from the container element. The `DualRangeBar` instance inherits the container's `EventTarget` interface, so listening to the `DualRangeBar` instance works the same. The emitted event is a [`CustomEvent`](https://developer.mozilla.org/en/docs/Web/API/CustomEvent) object, with its `detail` property referring the `DualRangeBar` instance.
+
+```javascript
+drbar.addEventListener('update', (e) => {
+  console.log(e.detail.lower, e.detail.upper)
+})
+
+// This works the same
+document.getElementById('my-drbar-container').addEventListener('update', 
+  (e) => { console.log(e.detail.lower, e.detail.upper) })
+```
+
+## Styling
+
+Though styling in the configuration options of the constructor is recommended, it is also possible to add custom style sheets to achieve detailed control to the style.
+
+To override the default styles, you can select the elements via the container's id. Eg., the container's id is `my-drbar-container`, to style the sliders, you need to query the `#my-drbar-container .drbar-slider` CSS selector. This will override the default style specification implemented using the selector `.drbar-container .drbar-slider`.
+
+Most dimensions & colors are specified with [CSS variables](https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_custom_properties), overriding these variables will make changes to the dimensions & colors.
+
+```css
+.drbar-container {
+  /* Colors */
+  --slider-color: #1E88A8;
+  --range-color: #7DB9DE;
+  --bg-color: #aaaaaa44;
+  --slider-active: #08789b;
+  --range-active: #5da8d6;
+  /* Sizes */
+  --slider-wh: 20px;
+  --range-thick: 15px;
+  --bg-thick: 10px;
+  --mini-thick: 4px;
+  --mini-ratio: calc(4/15);
+}
+```
+
+Please refer to the [`src/style.css`](src/styles.css) when advanced styling is needed.
 
 ## Contributing
 
