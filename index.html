@@ -5,10 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Dual range bar</title>
-  <script src="dist/dual-range-bar.min.js"></script>
+  <script src="https://unpkg.com/dual-range-bar@1.0.0/dist/dual-range-bar.min.js"></script>
 </head>
 <body>
-  <a href="https://github.com/celestialphineas/dual-range-bar"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"></a>
+  <a href="https://github.com/welai/dual-range-bar"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"></a>
   <h1 class="title">Dual-range-bar</h1>
   <div id="dhr"></div>
   <div id="dvr"></div>
@@ -18,7 +18,7 @@
     <div style="text-align:left">
       <p>Slide the round sliders and the range slider to change the range.</p>
       <p>Try to scroll your mouse wheel on different components of the range bar.</p>
-      <p>For the full spec and usage, see <a href="https://github.com/celestialphineas/dual-range-bar">readme</a>.</p>
+      <p>For the full spec and usage, see <a href="https://github.com/welai/dual-range-bar">readme</a>.</p>
     </div>
   </div>
 <style>
@@ -64,8 +64,8 @@ a:hover {
 </style>
 </body>
 <script>
-var dhr = new DualHRange('dhr')
-var dvr = new DualVRange('dvr')
+var dhr = new DualHRange('dhr', { lower: 0.2, upper: 0.8 })
+var dvr = new DualVRange('dvr', { lower: 0.2, upper: 0.8 })
 
 dhr.addEventListener('update', (event) => {
   document.getElementById('x1').innerText = event.detail.lower.toFixed(2);
