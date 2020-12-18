@@ -159,6 +159,10 @@ export default abstract class DualRangeBar implements EventTarget {
 
   /** Saved touchstart clientX */ protected prevClientX = 0
   /** Saved touchstart clientY */ protected prevClientY = 0
+  /** TouchEvent type guard */
+  protected isTouchEvent(event: MouseEvent | TouchEvent): event is TouchEvent {
+    return (event as TouchEvent).touches !== undefined
+  }
   /** Handling events */
   private handleEvents() {
     // Update bar when the container resizes
@@ -188,13 +192,14 @@ export default abstract class DualRangeBar implements EventTarget {
       this.underDragging = 'range' })
     // Moving pointer
     const pointerMove = (e: MouseEvent | TouchEvent) => {
-      if(this.underDragging !== null) e.preventDefault()
+      if (this.underDragging !== null) e.preventDefault()
       switch (this.underDragging) {
         case null: return
         case 'start': this.draggingStart(e); break
         case 'end': this.draggingEnd(e); break
         case 'range': this.draggingRange(e); break
       }
+      if (this.isTouchEvent(e)) saveClientXY(e)
       this.update()
       this.emitEvent()
     }

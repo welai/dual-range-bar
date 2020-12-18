@@ -1,6 +1,6 @@
 {
   "name": "dual-range-bar",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A dual range slider/scrolling bar without dependency",
   "main": "dist/dual-range-bar.min.js",
   "files": [ "/dist", "/types" ],
