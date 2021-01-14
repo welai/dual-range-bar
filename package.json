@@ -1,8 +1,8 @@
 {
   "name": "dual-range-bar",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A dual range slider/scrolling bar without dependency",
-  "main": "dist/dual-range-bar.min.js",
+  "main": "dist/dual-range-bar.js",
   "files": [ "/dist", "/types" ],
   "types": "types/index.d.ts",
   "repository": "https://github.com/welai/dual-range-bar.git",

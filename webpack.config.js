@@ -5,11 +5,12 @@ function generateConfig(name) {
   var uglify = name.indexOf('min') > -1;
   var config = {
     mode: 'development',
+    devtool: 'source-map',
     entry: './src/index.ts',
     output: {
       path: path.resolve(__dirname, 'dist'),
       filename: name + '.js',
-      sourceMapFilename: name + '.map',
+      sourceMapFilename: name + '.js.map',
       library: 'dual-range-bar',
       libraryTarget: 'umd',
       umdNamedDefine: true
@@ -49,6 +50,7 @@ function generateConfig(name) {
       minimize: true, minimizer: [ new TerserPlugin() ]
     }
     config.mode = 'production';
+    config.devtool = undefined;
   }
   return config;
 };
