@@ -15,7 +15,7 @@ window.addEventListener('load', () => {
   }
 });
 
-(window as any).DualHRange = DualHRangeBar;
-(window as any).DualVRange = DualVRangeBar;
+(window as any).DualHRangeBar = DualHRangeBar;
+(window as any).DualVRangeBar = DualVRangeBar;
 
 export { DualHRangeBar, DualVRangeBar };
